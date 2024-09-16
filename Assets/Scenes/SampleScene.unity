@@ -398,7 +398,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   decelerationRate: 10
-  jumpPower: 13
+  jumpPower: 14
   groundCheckDistance: 0.4
   platformLayer:
     serializedVersion: 2
