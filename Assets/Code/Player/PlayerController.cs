@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // 능력치 클래스 참조
+    // Rigidbody2D  참조
+    private new Rigidbody2D rigidbody2D;
+
+    // PlayerState 참조
     private PlayerState playerState;
 
     // 점프
@@ -14,16 +17,12 @@ public class PlayerController : MonoBehaviour
     public float disableColliderTime; // Collider 비활성화 시간
 
     //2단 점프
-    public int maxJumpCount = 2;        // 최대 점프 횟수
+    public int maxJumpCount = 2; // 최대 점프 횟수
     private int JumpCount = 0;   // 현재 남은 점프 횟수
 
-    // Rigidbody2D 컴포넌트
-    private new Rigidbody2D rigidbody2D;
-
     // 스프라이트 방향
-    private float horizontalInput; // 이동 입력값 저장
+    private float horizontalInput;     // 이동 입력값 저장
     private bool isFacingRight = true; // 스프라이트 방향 제어
-
 
     void Start()
     {
@@ -47,6 +46,7 @@ public class PlayerController : MonoBehaviour
         {
             CheckAndPassThroughPlatform();
         }
+        
         // 점프
         else if (Input.GetKeyDown(KeyCode.Space) && JumpCount > 0)
         {

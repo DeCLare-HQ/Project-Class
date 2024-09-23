@@ -376,8 +376,8 @@ GameObject:
   - component: {fileID: 539882996}
   - component: {fileID: 539882994}
   - component: {fileID: 539882995}
-  - component: {fileID: 539882993}
   - component: {fileID: 539882998}
+  - component: {fileID: 539882993}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -404,7 +404,7 @@ MonoBehaviour:
   platformCanDownLayer:
     serializedVersion: 2
     m_Bits: 512
-  disableColliderTime: 1
+  disableColliderTime: 0.5
   maxJumpCount: 1
 --- !u!61 &539882994
 BoxCollider2D:
@@ -558,15 +558,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   physicalAttackPower: 10
+  meleeRange: 1
+  meleeAttackSpeed: 5
   magicAttackPower: 8
-  attackSpeed: 1
   defense: 5
   maxHealth: 100
-  currentHealth: 0
-  potionCount: 3
   moveSpeed: 5
   decelerationRate: 10
   jumpPower: 14
+  potionCount: 2
+  inventorySlot: 5
+  skillSlot: 5
+  money: 0
+  skillPoint: 0
 --- !u!1 &605116348
 GameObject:
   m_ObjectHideFlags: 0
