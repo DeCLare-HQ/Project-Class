@@ -995,7 +995,7 @@ MonoBehaviour:
   magicDefense: 5
   attackSpeed: 1.5
   attackPower: 20
-  itemDrop: {fileID: 0}
+  moveSpeed: 2
 --- !u!114 &1995182045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1008,7 +1008,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91487e58756a2f54a979acd8dfd61891, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 2
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
