@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // 좌우 이동
-    public float moveSpeed; // 이동 속도
-    public float decelerationRate; // 감속 속도
+    // 능력치 클래스 참조
+    private PlayerState playerState;
 
     // 점프
-    public float jumpPower; // 점프 힘
     public float groundCheckDistance; // 바닥을 감지할 거리
     public LayerMask platformLayer; // 점프할 수 있는 레이어
     public LayerMask platformCanDownLayer; // 하단 점프할 수 있는 레이어
@@ -29,6 +27,9 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        // PlayerState 컴포넌트
+        playerState = GetComponent<PlayerState>();
+
         // Rigidbody2D 컴포넌트
         rigidbody2D = GetComponent<Rigidbody2D>();
     }
@@ -64,7 +65,7 @@ public class PlayerController : MonoBehaviour
         if (horizontalInput != 0)
         {
             // 플레이어가 입력을 받을 때 이동 처리
-            Vector2 movement = new Vector2(horizontalInput * moveSpeed, rigidbody2D.velocity.y);
+            Vector2 movement = new Vector2(horizontalInput * playerState.moveSpeed, rigidbody2D.velocity.y);
             rigidbody2D.velocity = movement;
         }
         else
@@ -96,7 +97,7 @@ public class PlayerController : MonoBehaviour
     {
         // 현재 x축 속도를 서서히 감소
         Vector2 velocity = rigidbody2D.velocity;
-        velocity.x = Mathf.Lerp(velocity.x, 0, decelerationRate * Time.fixedDeltaTime);
+        velocity.x = Mathf.Lerp(velocity.x, 0, playerState.decelerationRate * Time.fixedDeltaTime);
         rigidbody2D.velocity = velocity;
     }
 
@@ -104,7 +105,7 @@ public class PlayerController : MonoBehaviour
     void Jump()
     {
         rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, 0); // 기존 y 속도 초기화
-        rigidbody2D.velocity += Vector2.up * jumpPower;  // 새로운 힘 적용
+        rigidbody2D.velocity += Vector2.up * playerState.jumpPower;  // 새로운 힘 적용
         JumpCount--; // 점프할 때마다 점프 횟수 감소
     }
 
@@ -121,7 +122,7 @@ public class PlayerController : MonoBehaviour
         return hit.collider != null;
     }
 
-    // Raycast를 나타냄 (디버깅)
+    // Raycast 표시 (디버깅)
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
