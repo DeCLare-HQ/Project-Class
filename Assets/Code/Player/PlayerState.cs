@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class PlayerState : MonoBehaviour
 {
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
+    
     [Header("공격 능력치 설정")]
     public float physicalAttackPower = 10.0f; // 물리 공격력
     public float meleeRange = 1.0f;           // 근접 공격 범위
