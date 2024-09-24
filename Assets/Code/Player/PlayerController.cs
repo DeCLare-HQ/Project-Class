@@ -30,6 +30,12 @@ public class PlayerController : MonoBehaviour
     public Transform pos;
     public Vector2 boxSize;
 
+    // 원거리 공격
+    [SerializeField] GameObject bulletPref;
+    private float firePower = 15.0f; // 발사 힘
+    private float fireDelay = 0.2f;  // 발사 딜레이
+    private float lastFireTime = 0;  // 마지막 발사 시간
+
     void Start()
     {
         // PlayerState 컴포넌트
@@ -66,17 +72,22 @@ public class PlayerController : MonoBehaviour
         }
 
         // 버튼 입력시 쿨타임이 없으면 근접 공격
-        if(curTime <= 0)
+        if (curTime <= 0)
         {
-            if(Input.GetKey(KeyCode.R))
+            if(Input.GetKeyDown(KeyCode.R))
             {
-                meleeAtack();
+                MeleeAtack();
             }
         }
 
         else
         {
             curTime -= Time.deltaTime;
+        }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            Fire();
         }
     }
 
@@ -168,8 +179,8 @@ public class PlayerController : MonoBehaviour
         platformCollider.enabled = true;
     }
 
-    // 영역에 적이 있는지 확인
-    void meleeAtack()
+    // 근접 공격 영역에 적이 있는지 확인
+    void MeleeAtack()
     {
         Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
         foreach (Collider2D collider in collider2Ds)
@@ -177,7 +188,25 @@ public class PlayerController : MonoBehaviour
             if (collider.tag == "Enemy")
                 Debug.Log("MeleeAttack");
         }
-        curTime = playerState.meleeAtackCoolTime;
+        curTime = playerState.meleeAttackCoolTime;
+    }
+
+    // 원거리 공격
+    void Fire()
+    {
+        if (Time.time - lastFireTime >= fireDelay)
+        {
+            Vector3 direction = transform.right * transform.localScale.x; // 플레이어의 방향에 따라 발사 방향 결정
+            GameObject bullet = Instantiate(bulletPref, transform.position + direction, Quaternion.identity);
+
+            // 플레이어의 방향에 따른 투사체 스프라이트 스케일 반전
+            float bulletDirection = transform.localScale.x > 0 ? 1f : -1f;
+            bullet.transform.localScale = new Vector3(bulletDirection, 1f, 1f);
+
+            bullet.GetComponent<Rigidbody2D>().AddForce(direction * firePower, ForceMode2D.Impulse);
+
+            lastFireTime = Time.time; // 마지막 발사 시간 업데이트
+        }
     }
 
     // Raycast 표시 (디버깅)

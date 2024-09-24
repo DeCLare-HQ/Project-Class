@@ -11,7 +11,7 @@ public class PlayerState : MonoBehaviour
     
     [Header("공격 능력치 설정")]
     public float physicalAttackPower = 10.0f; // 물리 공격력
-    public float meleeAtackCoolTime = 1.0f;   // 근접 공격 간격
+    public float meleeAttackCoolTime = 1.0f;   // 근접 공격 간격
     public float magicAttackPower = 8.0f;     // 마법 공격력
     public float defense = 5.0f;              // 방어력
 
