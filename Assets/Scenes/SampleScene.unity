@@ -376,8 +376,8 @@ GameObject:
   - component: {fileID: 539882996}
   - component: {fileID: 539882994}
   - component: {fileID: 539882995}
-  - component: {fileID: 539882998}
   - component: {fileID: 539882993}
+  - component: {fileID: 539882998}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -571,7 +571,7 @@ MonoBehaviour:
   moveSpeed: 5
   decelerationRate: 10
   jumpPower: 14
-  potionCount: 2
+  potionCount: 3
   inventorySlot: 5
   skillSlot: 5
   money: 0
@@ -719,7 +719,7 @@ GameObject:
   - component: {fileID: 954508445}
   - component: {fileID: 954508444}
   - component: {fileID: 954508443}
-  - component: {fileID: 954508442}
+  - component: {fileID: 954508448}
   m_Layer: 7
   m_Name: EnemyMelee (1)
   m_TagString: Enemy
@@ -727,24 +727,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &954508442
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 954508441}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83613a69d4a64c241aaa4fd7c49edacd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 100
-  physicalDefense: 10
-  magicDefense: 5
-  attackSpeed: 1.5
-  attackPower: 20
-  moveSpeed: 1
 --- !u!114 &954508443
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -900,6 +882,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &954508448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954508441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83613a69d4a64c241aaa4fd7c49edacd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  physicalDefense: 10
+  magicDefense: 5
+  attackSpeed: 1.5
+  attackPower: 20
+  moveSpeed: 1
 --- !u!1 &1242110618
 GameObject:
   m_ObjectHideFlags: 0
@@ -1204,7 +1204,7 @@ GameObject:
   - component: {fileID: 1995182047}
   - component: {fileID: 1995182046}
   - component: {fileID: 1995182045}
-  - component: {fileID: 1995182044}
+  - component: {fileID: 1995182050}
   m_Layer: 7
   m_Name: EnemyMelee
   m_TagString: Enemy
@@ -1212,24 +1212,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1995182044
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1995182043}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 83613a69d4a64c241aaa4fd7c49edacd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 100
-  physicalDefense: 10
-  magicDefense: 5
-  attackSpeed: 1.5
-  attackPower: 20
-  moveSpeed: 1
 --- !u!114 &1995182045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1385,6 +1367,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1995182050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995182043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83613a69d4a64c241aaa4fd7c49edacd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  physicalDefense: 10
+  magicDefense: 5
+  attackSpeed: 1.5
+  attackPower: 20
+  moveSpeed: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
