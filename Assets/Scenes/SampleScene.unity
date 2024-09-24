@@ -564,6 +564,8 @@ MonoBehaviour:
   physicalAttackPower: 10
   meleeAttackCoolTime: 1
   magicAttackPower: 8
+  bulletFirePower: 15
+  bulletFireDelay: 0.5
   defense: 5
   maxHealth: 100
   moveSpeed: 5

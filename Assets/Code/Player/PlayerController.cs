@@ -32,8 +32,6 @@ public class PlayerController : MonoBehaviour
 
     // 원거리 공격
     [SerializeField] GameObject bulletPref;
-    private float firePower = 15.0f; // 발사 힘
-    private float fireDelay = 0.2f;  // 발사 딜레이
     private float lastFireTime = 0;  // 마지막 발사 시간
 
     void Start()
@@ -194,7 +192,7 @@ public class PlayerController : MonoBehaviour
     // 원거리 공격
     void Fire()
     {
-        if (Time.time - lastFireTime >= fireDelay)
+        if (Time.time - lastFireTime >= playerState.bulletFireDelay)
         {
             Vector3 direction = transform.right * transform.localScale.x; // 플레이어의 방향에 따라 발사 방향 결정
             GameObject bullet = Instantiate(bulletPref, transform.position + direction, Quaternion.identity);
@@ -203,7 +201,7 @@ public class PlayerController : MonoBehaviour
             float bulletDirection = transform.localScale.x > 0 ? 1f : -1f;
             bullet.transform.localScale = new Vector3(bulletDirection, 1f, 1f);
 
-            bullet.GetComponent<Rigidbody2D>().AddForce(direction * firePower, ForceMode2D.Impulse);
+            bullet.GetComponent<Rigidbody2D>().AddForce(direction * playerState.bulletFirePower, ForceMode2D.Impulse);
 
             lastFireTime = Time.time; // 마지막 발사 시간 업데이트
         }
