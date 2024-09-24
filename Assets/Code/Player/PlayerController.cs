@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -23,6 +24,12 @@ public class PlayerController : MonoBehaviour
     // 스프라이트 방향
     private float horizontalInput;     // 이동 입력값 저장
     private bool isFacingRight = true; // 스프라이트 방향 제어
+
+    // 근접 공격
+    private float curTime;
+    public float coolTime = 0.5f; // 공격 간격
+    public Transform pos;
+    public Vector2 boxSize;
 
     void Start()
     {
@@ -57,6 +64,26 @@ public class PlayerController : MonoBehaviour
         if (IsGrounded())
         {
             JumpCount = maxJumpCount; // 2단 점프 횟수 초기화
+        }
+
+        // 버튼 입력시 쿨타임이 없으면 근접 공격
+        if(curTime <= 0)
+        {
+            if(Input.GetKey(KeyCode.R))
+            {
+                Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
+                foreach(Collider2D collider in collider2Ds)
+                {
+                    if(collider.tag == "Enemy")
+                    Debug.Log("MeleeAttack");
+                }
+                curTime = coolTime;
+            }
+        }
+
+        else
+        {
+            curTime -= Time.deltaTime;
         }
     }
 
@@ -125,8 +152,13 @@ public class PlayerController : MonoBehaviour
     // Raycast 표시 (디버깅)
     void OnDrawGizmos()
     {
+        // 바닥 스캔 거리 표시
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
+
+        // 근접 공격 Overlap 박스 표시 (디버깅)
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(pos.position, boxSize);
     }
 
     // 하단 점프 가능한 바닥 확인
