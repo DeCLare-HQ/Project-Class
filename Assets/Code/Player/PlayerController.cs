@@ -27,7 +27,6 @@ public class PlayerController : MonoBehaviour
 
     // 근접 공격
     private float curTime;
-    public float coolTime = 0.5f; // 공격 간격
     public Transform pos;
     public Vector2 boxSize;
 
@@ -71,13 +70,7 @@ public class PlayerController : MonoBehaviour
         {
             if(Input.GetKey(KeyCode.R))
             {
-                Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
-                foreach(Collider2D collider in collider2Ds)
-                {
-                    if(collider.tag == "Enemy")
-                    Debug.Log("MeleeAttack");
-                }
-                curTime = coolTime;
+                meleeAtack();
             }
         }
 
@@ -149,18 +142,6 @@ public class PlayerController : MonoBehaviour
         return hit.collider != null;
     }
 
-    // Raycast 표시 (디버깅)
-    void OnDrawGizmos()
-    {
-        // 바닥 스캔 거리 표시
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
-
-        // 근접 공격 Overlap 박스 표시 (디버깅)
-        Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(pos.position, boxSize);
-    }
-
     // 하단 점프 가능한 바닥 확인
     void CheckAndPassThroughPlatform()
     {
@@ -185,5 +166,29 @@ public class PlayerController : MonoBehaviour
 
         // Collider 활성화
         platformCollider.enabled = true;
+    }
+
+    // 영역에 적이 있는지 확인
+    void meleeAtack()
+    {
+        Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
+        foreach (Collider2D collider in collider2Ds)
+        {
+            if (collider.tag == "Enemy")
+                Debug.Log("MeleeAttack");
+        }
+        curTime = playerState.meleeAtackCoolTime;
+    }
+
+    // Raycast 표시 (디버깅)
+    void OnDrawGizmos()
+    {
+        // 바닥 스캔 거리 표시
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
+
+        // 근접 공격 Overlap 박스 표시 (디버깅)
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(pos.position, boxSize);
     }
 }
