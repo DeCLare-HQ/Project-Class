@@ -41,6 +41,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform firePoint;  // 투사체 발사 위치
     [SerializeField] Vector3 bulletScale = new Vector3(0.5f, 0.5f, 0.5f); // 투사체 크기
 
+    // 무적 상태 처리
+    private bool isInvincible = false; // 무적 상태 여부
+    private float invincibilityDuration = 1.0f; // 무적 상태 지속 시간
+    private Color originalColor; // 원래 색상 저장
+    private SkeletonAnimation skeletonAnimation; // Spine의 SkeletonAnimation 참조
+
+    // 충돌 감지에 사용할 변수들
+    public LayerMask enemyLayerMask;  // 적의 레이어 마스크
+    public string enemyTag = "Enemy"; // 적의 태그 (적이 가진 태그)
+    public Transform detectionBoxTransform; // 충돌 감지를 위한 Empty Object의 Transform
+    public Vector2 detectionBoxSize = new Vector2(1.0f, 2.0f); // 사각형 범위 크기
 
     void Start()
     {
@@ -52,6 +63,10 @@ public class PlayerController : MonoBehaviour
 
         // PlayerAnimationController 컴포넌트
         animationController = GetComponent<PlayerAnimationController>();
+
+        // SkeletonAnimation 참조
+        skeletonAnimation = GetComponent<SkeletonAnimation>();
+        originalColor = skeletonAnimation.skeleton.GetColor();  // Spine 캐릭터의 원래 색상 저장
     }
 
     void Update()
@@ -97,6 +112,9 @@ public class PlayerController : MonoBehaviour
         {
             Fire();
         }
+
+        // 적과의 충돌 감지
+        CheckForEnemyCollision();
     }
 
     void FixedUpdate()
@@ -169,6 +187,7 @@ public class PlayerController : MonoBehaviour
         platformCollider.enabled = true;
     }
 
+    // 근접 공격
     void MeleeAttack()
     {
         isAttacking = true;
@@ -222,12 +241,76 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Raycast 표시 (디버깅)
+    // 적과의 충돌 감지 (사각형 범위 내 적들 감지 - Tag 또는 Layer 사용)
+    void CheckForEnemyCollision()
+    {
+        if (!isInvincible)
+        {
+            // 사각형 충돌 감지 범위 안에 적이 있는지 확인
+            Collider2D[] colliders = Physics2D.OverlapBoxAll(detectionBoxTransform.position, detectionBoxSize, 0, enemyLayerMask);
+            foreach (Collider2D collider in colliders)
+            {
+                if (collider.tag == enemyTag)  // 적이 적 태그를 가지고 있는지 확인
+                {
+                    HandleEnemyCollision(collider.GetComponent<EnemyMelee01>());
+                    break;
+                }
+            }
+        }
+    }
+
+    // 적과의 충돌 처리 함수
+    void HandleEnemyCollision(EnemyMelee01 enemy)
+    {
+        if (enemy != null)
+        {
+            // "적 공격력 - 플레이어 방어력" 데미지 공식 적용
+            float damage = Mathf.Max(0, enemy.GetComponent<StateEnemyMelee01>().attackPower - playerState.defense);
+
+            // 플레이어 체력 감소
+            playerState.maxHealth -= (int)damage;
+            Debug.Log("플레이어가 받은 데미지: " + damage);
+            Debug.Log("플레이어의 남은 체력: " + playerState.maxHealth);
+
+            // 체력이 0 이하이면 게임 오버 처리
+            if (playerState.maxHealth <= 0)
+            {
+                Debug.Log("게임 오버");
+                Destroy(gameObject); // 플레이어 오브젝트 삭제
+            }
+            else
+            {
+                // 무적 상태로 전환하고 깜빡이는 효과 적용
+                StartCoroutine(BlinkAndBecomeInvincible());
+            }
+        }
+    }
+
+    // 무적 상태로 전환하고 깜빡이는 효과를 처리하는 코루틴
+    private IEnumerator BlinkAndBecomeInvincible()
+    {
+        isInvincible = true; // 무적 상태 시작
+        skeletonAnimation.skeleton.SetColor(Color.black); // 플레이어를 검정색으로 변경
+
+        yield return new WaitForSeconds(0.1f); // 0.1초 후 다시 원래 색으로 복원
+        skeletonAnimation.skeleton.SetColor(originalColor);
+
+        // 무적 상태 지속 시간 동안 추가 데미지를 받지 않음
+        yield return new WaitForSeconds(invincibilityDuration);
+
+        isInvincible = false; // 무적 상태 해제
+    }
+
+    // Gizmos로 충돌 감지 범위 시각화 (사각형으로 표시)
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
         Gizmos.color = Color.blue;
         Gizmos.DrawWireCube(pos.position, boxSize);
+
+        // 충돌 감지 범위를 사각형으로 표시
+        Gizmos.color = Color.green;  // 충돌 감지 범위를 초록색으로 표시
+        Gizmos.DrawWireCube(detectionBoxTransform.position, detectionBoxSize);
     }
 }

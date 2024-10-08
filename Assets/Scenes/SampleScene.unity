@@ -522,6 +522,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62312aaad1178204d90829666195fa74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &162178648
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 162178649}
+  m_Layer: 0
+  m_Name: Hit
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &162178649
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 162178648}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.91, z: 0.03973891}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1081231768}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -907,6 +938,7 @@ Transform:
   m_Children:
   - {fileID: 861633402}
   - {fileID: 1974138961}
+  - {fileID: 162178649}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1081231769
@@ -961,10 +993,16 @@ MonoBehaviour:
   horizontalInput: 0
   pos: {fileID: 861633402}
   boxSize: {x: 2.5, y: 2}
-  isAttacking: 0
+  isAttacking: 1
   bulletPref: {fileID: 6542470548250458597, guid: 2d0f4bc30ab9efb44a9896a3c1b2a693, type: 3}
   firePoint: {fileID: 1974138961}
   bulletScale: {x: 0.5, y: 0.5, z: 0.5}
+  enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
+  enemyTag: Enemy
+  detectionBoxTransform: {fileID: 162178649}
+  detectionBoxSize: {x: 1, y: 2}
 --- !u!61 &1081231771
 BoxCollider2D:
   m_ObjectHideFlags: 0
