@@ -22,7 +22,9 @@ public class PlayerState : MonoBehaviour
     public float defense = 5.0f;              // 방어력
 
     [Header("체력 능력치 설정")]
-    public int maxHealth = 100;               // 최대 체력
+    public int maxHealth = 50;               // 최대 체력
+    public int currentHealth = 50;           // 현재 체력
+
 
     [Header("이동 능력치 설정")]
     public float moveSpeed = 5.0f;            // 이동 속도
@@ -31,6 +33,7 @@ public class PlayerState : MonoBehaviour
 
     [Header("인벤토리 설정")]
     public int potionCount = 3;             // 회복약 소지 개수
+    public int healAmount = 20;              // 회복약 1개의 체력 회복량
     public int inventorySlot = 5;           // 인벤토리 칸 개수
     public int skillSlot = 5;               // 스킬 칸 개수
     public int money;                       // 돈
