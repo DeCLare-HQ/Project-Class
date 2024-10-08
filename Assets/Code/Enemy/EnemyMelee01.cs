@@ -105,7 +105,7 @@ public class EnemyMelee01 : MonoBehaviour
     // 적이 근접 공격에 맞았을 때 호출 (물리 공격력 - 물리 방어력)
     public void TakeDamage(float physicalDamage)
     {
-        StartCoroutine(HurtRoutine(Color.blue, physicalDamage)); // 근접 공격 시 파란색으로 변경
+        StartCoroutine(HurtRoutine(Color.red, physicalDamage)); // 근접 공격 시 파란색으로 변경
     }
 
     // 적이 원거리 공격(투사체)에 맞았을 때 호출 (마법 공격력 - 마법 방어력)
