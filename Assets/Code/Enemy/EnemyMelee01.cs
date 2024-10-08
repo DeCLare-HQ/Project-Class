@@ -11,20 +11,31 @@ public class EnemyMelee01 : MonoBehaviour
     private bool isFacingLeft = true; // 스프라이트 기본 방향이 왼쪽이면 true로 설정
     private bool isAtEdge = false; // 낭떠러지에 도달했는지 여부
 
+    private bool isHurt = false; // 피격 상태 여부 확인
+
     private StateEnemyMelee01 enemyState; // 능력치 참조
     private EnemyMelee01AnimationController enemyAnimationController; // 애니메이션 컨트롤러 참조
+    private SkeletonAnimation skeletonAnimation; // SkeletonAnimation 참조
+
+    private Color originalColor; // 원래 색상 저장
+    private float currentHealth; // 적의 현재 체력
 
     private void Start()
     {
         enemyState = GetComponent<StateEnemyMelee01>();
-        enemyAnimationController = GetComponent<EnemyMelee01AnimationController>(); // 애니메이션 컨트롤러 참조 추가
+        enemyAnimationController = GetComponent<EnemyMelee01AnimationController>();
+        skeletonAnimation = GetComponent<SkeletonAnimation>(); // SkeletonAnimation 컴포넌트 참조 추가
+
+        // 적의 기본 색상 저장
+        originalColor = skeletonAnimation.skeleton.GetColor(); // Spine의 기본 색상 저장
 
         isFacingLeft = false; // 기본 스프라이트가 오른쪽을 바라본다고 가정
+        currentHealth = enemyState.health; // 적의 최대 체력으로 초기화
     }
 
     private void Update()
     {
-        if (!isAtEdge) // 낭떠러지에 도달하지 않았을 때만 이동
+        if (!isHurt && !isAtEdge) // 피격 상태가 아닐 때만 이동
         {
             Move(); // 이동 실행
         }
@@ -89,5 +100,50 @@ public class EnemyMelee01 : MonoBehaviour
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
+    }
+
+    // 적이 근접 공격에 맞았을 때 호출 (물리 공격력 - 물리 방어력)
+    public void TakeDamage(float physicalDamage)
+    {
+        StartCoroutine(HurtRoutine(Color.blue, physicalDamage)); // 근접 공격 시 파란색으로 변경
+    }
+
+    // 적이 원거리 공격(투사체)에 맞았을 때 호출 (마법 공격력 - 마법 방어력)
+    public void TakeDamageFromProjectile(float magicDamage)
+    {
+        StartCoroutine(HurtRoutine(Color.blue, magicDamage)); // 원거리 공격 시 동일하게 파란색으로 변경
+    }
+
+    // 피격 처리 코루틴 (색상과 데미지를 받아 처리)
+    private IEnumerator HurtRoutine(Color hurtColor, float damage)
+    {
+        isHurt = true; // 피격 상태 설정
+
+        // 적의 색상을 파라미터로 받은 색상으로 변경 (SkeletonAnimation의 색상 변경)
+        skeletonAnimation.skeleton.SetColor(hurtColor);
+
+        // 데미지 계산 및 체력 감소
+        currentHealth -= damage;
+        Debug.Log("적이 받은 데미지: " + damage);
+        Debug.Log("적의 남은 체력: " + currentHealth);
+
+        // 체력이 0 이하이면 죽음 처리
+        if (currentHealth <= 0)
+        {
+            Debug.Log("죽음");
+            Destroy(gameObject);
+            yield break; // 죽음 시 코루틴 종료
+        }
+
+        // hurt 애니메이션 재생
+        enemyAnimationController.PlayHurtAnimation();
+
+        // 애니메이션이 끝날 때까지 대기
+        yield return new WaitUntil(() => enemyAnimationController.IsAnimationComplete());
+
+        // 원래 색으로 복원 (SkeletonAnimation의 색상 복원)
+        skeletonAnimation.skeleton.SetColor(originalColor);
+
+        isHurt = false; // 피격 상태 해제
     }
 }

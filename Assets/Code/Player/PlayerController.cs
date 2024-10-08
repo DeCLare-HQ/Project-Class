@@ -169,7 +169,6 @@ public class PlayerController : MonoBehaviour
         platformCollider.enabled = true;
     }
 
-    // 근접 공격
     void MeleeAttack()
     {
         isAttacking = true;
@@ -181,10 +180,21 @@ public class PlayerController : MonoBehaviour
         foreach (Collider2D collider in collider2Ds)
         {
             if (collider.tag == "Enemy")
+            {
                 Debug.Log("MeleeAttack Hit: " + collider.name);
+
+                // 적에게 데미지 전달
+                EnemyMelee01 enemy = collider.GetComponent<EnemyMelee01>();
+                if (enemy != null)
+                {
+                    // 플레이어의 물리 공격력에서 적의 물리 방어력을 뺀 데미지 계산
+                    float damage = Mathf.Max(0, playerState.physicalAttackPower - enemy.GetComponent<StateEnemyMelee01>().physicalDefense);
+                    enemy.TakeDamage(damage); // 적에게 데미지 전달
+                }
+            }
         }
 
-        curTime = playerState.meleeAttackCoolTime;
+        curTime = playerState.meleeAttackCoolTime; // 쿨타임 설정
     }
 
     // 원거리 공격
