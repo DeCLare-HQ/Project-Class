@@ -1,38 +1,46 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Spine.Unity;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    // Rigidbody2D  참조
+    // Rigidbody2D 참조
     private new Rigidbody2D rigidbody2D;
 
     // PlayerState 참조
     private PlayerState playerState;
 
-    // 점프
-    public float groundCheckDistance; // 바닥을 감지할 거리
-    public LayerMask platformLayer; // 점프할 수 있는 레이어
-    public LayerMask platformCanDownLayer; // 하단 점프할 수 있는 레이어
-    public float disableColliderTime; // Collider 비활성화 시간
+    // PlayerAnimationController 참조
+    public PlayerAnimationController animationController;  // 애니메이션 컨트롤러 참조 추가
 
-    //2단 점프
-    public int maxJumpCount = 2; // 최대 점프 횟수
-    private int JumpCount = 0;   // 현재 남은 점프 횟수
+    // 점프
+    public float groundCheckDistance;
+    public LayerMask platformLayer;
+    public LayerMask platformCanDownLayer;
+    public float disableColliderTime = 0.5f;
+
+    // 2단 점프
+    public int maxJumpCount = 2;
+    private int JumpCount = 0;
 
     // 스프라이트 방향
-    private float horizontalInput;     // 이동 입력값 저장
-    private bool isFacingRight = true; // 스프라이트 방향 제어
+    public float horizontalInput;
+    private bool isFacingRight = true;
 
     // 근접 공격
     private float curTime;
     public Transform pos;
     public Vector2 boxSize;
+    public bool isAttacking = false;  // 공격 중인지 확인
 
     // 원거리 공격
     [SerializeField] GameObject bulletPref;
-    private float lastFireTime = 0;  // 마지막 발사 시간
+    private float lastFireTime = 0;
+    [SerializeField] Transform firePoint;  // 투사체 발사 위치
+    [SerializeField] Vector3 bulletScale = new Vector3(0.5f, 0.5f, 0.5f); // 투사체 크기
+
 
     void Start()
     {
@@ -41,6 +49,9 @@ public class PlayerController : MonoBehaviour
 
         // Rigidbody2D 컴포넌트
         rigidbody2D = GetComponent<Rigidbody2D>();
+
+        // PlayerAnimationController 컴포넌트
+        animationController = GetComponent<PlayerAnimationController>();
     }
 
     void Update()
@@ -56,7 +67,7 @@ public class PlayerController : MonoBehaviour
         {
             CheckAndPassThroughPlatform();
         }
-        
+
         // 점프
         else if (Input.GetKeyDown(KeyCode.Space) && JumpCount > 0)
         {
@@ -66,18 +77,17 @@ public class PlayerController : MonoBehaviour
         // 바닥에 닿았는지 확인, 점프 횟수 초기화
         if (IsGrounded())
         {
-            JumpCount = maxJumpCount; // 2단 점프 횟수 초기화
+            JumpCount = maxJumpCount;
         }
 
         // 버튼 입력시 쿨타임이 없으면 근접 공격
         if (curTime <= 0)
         {
-            if(Input.GetKeyDown(KeyCode.R))
+            if (Input.GetKeyDown(KeyCode.R))
             {
-                MeleeAtack();
+                MeleeAttack();
             }
         }
-
         else
         {
             curTime -= Time.deltaTime;
@@ -91,15 +101,14 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        // 공격 중에도 이동 가능
         if (horizontalInput != 0)
         {
-            // 플레이어가 입력을 받을 때 이동 처리
             Vector2 movement = new Vector2(horizontalInput * playerState.moveSpeed, rigidbody2D.velocity.y);
             rigidbody2D.velocity = movement;
         }
         else
         {
-            // 입력이 없을 때 감속 적용
             ApplyDeceleration();
         }
     }
@@ -107,13 +116,11 @@ public class PlayerController : MonoBehaviour
     // 스프라이트 방향 변경
     void FlipSprite()
     {
-        // 왼쪽으로 이동
         if (horizontalInput < 0 && isFacingRight)
         {
             transform.localScale = new Vector3(-1, 1, 1);
             isFacingRight = false;
         }
-        // 오른쪽으로 이동
         else if (horizontalInput > 0 && !isFacingRight)
         {
             transform.localScale = new Vector3(1, 1, 1);
@@ -124,7 +131,6 @@ public class PlayerController : MonoBehaviour
     // 감속 적용
     void ApplyDeceleration()
     {
-        // 현재 x축 속도를 서서히 감소
         Vector2 velocity = rigidbody2D.velocity;
         velocity.x = Mathf.Lerp(velocity.x, 0, playerState.decelerationRate * Time.fixedDeltaTime);
         rigidbody2D.velocity = velocity;
@@ -133,59 +139,51 @@ public class PlayerController : MonoBehaviour
     // 점프
     void Jump()
     {
-        rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, 0); // 기존 y 속도 초기화
-        rigidbody2D.velocity += Vector2.up * playerState.jumpPower;  // 새로운 힘 적용
-        JumpCount--; // 점프할 때마다 점프 횟수 감소
+        rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, 0);
+        rigidbody2D.velocity += Vector2.up * playerState.jumpPower;
+        JumpCount--;
     }
 
     // 바닥에 있는지 확인
     bool IsGrounded()
     {
-        // 레이어 종류 감지
         LayerMask combinedLayerMask = platformLayer | platformCanDownLayer;
-
-        // 플레이어 발 밑으로 Raycast
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, combinedLayerMask);
-
-        // Platform 레이어에 맞으면 true를 반환
         return hit.collider != null;
     }
 
-    // 하단 점프 가능한 바닥 확인
     void CheckAndPassThroughPlatform()
     {
-        // 플레이어 발 밑으로 Raycast
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, platformCanDownLayer);
 
-        // PlatformCanDown 레이어에 닿았을 경우 Collider 비활성화
         if (hit.collider != null)
         {
             StartCoroutine(DisablePlatformCollider(hit.collider));
         }
     }
 
-    // 일정 시간 Collider를 비활성화하여 플랫폼 통과
     IEnumerator DisablePlatformCollider(Collider2D platformCollider)
     {
-        // Collider 비활성화
         platformCollider.enabled = false;
-
-        // 일정 시간 기다림
         yield return new WaitForSeconds(disableColliderTime);
-
-        // Collider 활성화
         platformCollider.enabled = true;
     }
 
-    // 근접 공격 영역에 적이 있는지 확인
-    void MeleeAtack()
+    // 근접 공격
+    void MeleeAttack()
     {
+        isAttacking = true;
+
+        // 상체에 근접 공격 애니메이션 실행 (트랙 1)
+        animationController.PlayMeleeAttackAnimation();
+
         Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
         foreach (Collider2D collider in collider2Ds)
         {
             if (collider.tag == "Enemy")
-                Debug.Log("MeleeAttack");
+                Debug.Log("MeleeAttack Hit: " + collider.name);
         }
+
         curTime = playerState.meleeAttackCoolTime;
     }
 
@@ -194,27 +192,31 @@ public class PlayerController : MonoBehaviour
     {
         if (Time.time - lastFireTime >= playerState.bulletFireDelay)
         {
-            Vector3 direction = transform.right * transform.localScale.x; // 플레이어의 방향에 따라 발사 방향 결정
-            GameObject bullet = Instantiate(bulletPref, transform.position + direction, Quaternion.identity);
+            isAttacking = true;
 
-            // 플레이어의 방향에 따른 투사체 스프라이트 스케일 반전
+            // 원거리 공격 애니메이션 실행
+            animationController.PlayRangedAttackAnimation();
+
+            // firePoint 위치에서 발사
+            Vector3 direction = transform.right * transform.localScale.x;
+            GameObject bullet = Instantiate(bulletPref, firePoint.position, Quaternion.identity);
+
             float bulletDirection = transform.localScale.x > 0 ? 1f : -1f;
-            bullet.transform.localScale = new Vector3(bulletDirection, 1f, 1f);
+
+            // 플레이어 방향에 따라 반전
+            bullet.transform.localScale = new Vector3(bulletScale.x * bulletDirection, bulletScale.y, bulletScale.z);
 
             bullet.GetComponent<Rigidbody2D>().AddForce(direction * playerState.bulletFirePower, ForceMode2D.Impulse);
 
-            lastFireTime = Time.time; // 마지막 발사 시간 업데이트
+            lastFireTime = Time.time;
         }
     }
 
     // Raycast 표시 (디버깅)
     void OnDrawGizmos()
     {
-        // 바닥 스캔 거리 표시
         Gizmos.color = Color.red;
         Gizmos.DrawLine(transform.position, transform.position + Vector3.down * groundCheckDistance);
-
-        // 근접 공격 Overlap 박스 표시 (디버깅)
         Gizmos.color = Color.blue;
         Gizmos.DrawWireCube(pos.position, boxSize);
     }
