@@ -277,24 +277,35 @@ public class PlayerController : MonoBehaviour
             // 적 공격력 - 플레이어 방어력 데미지 공식
             float damage = Mathf.Max(0, enemy.GetComponent<StateEnemyMelee01>().attackPower - playerState.defense);
 
-            // 플레이어 체력 감소
-            playerState.currentHealth -= (int)damage;
-            Debug.Log("플레이어가 받은 데미지: " + damage);
-            Debug.Log("플레이어의 남은 체력: " + playerState.currentHealth);
-
-            // 체력이 0 이하 게임 오버
-            if (playerState.currentHealth <= 0)
-            {
-                Debug.Log("게임 오버");
-                Destroy(gameObject); // 플레이어 오브젝트 삭제
-            }
-            else
-            {
-                // 무적 상태로 전환하고 깜빡이는 효과 적용
-                StartCoroutine(BlinkAndBecomeInvincible());
-            }
+            // 데미지 적용
+            TakeDamage(damage);
         }
     }
+
+    // 데미지를 받는 함수
+    public void TakeDamage(float damage)
+    {
+        if (isInvincible) return; // 무적 상태일 경우 데미지를 받지 않음
+
+        // 데미지 처리: 플레이어의 체력을 감소시킴
+        playerState.currentHealth -= (int)damage;
+        Debug.Log("플레이어가 받은 데미지: " + damage);
+        Debug.Log("플레이어의 남은 체력: " + playerState.currentHealth);
+
+        // 체력이 0 이하이면 게임 오버 처리
+        if (playerState.currentHealth <= 0)
+        {
+            Debug.Log("게임 오버");
+            Destroy(gameObject); // 플레이어 오브젝트 삭제
+        }
+        else
+        {
+            // 피격 시 무적 상태 및 깜빡이는 효과 적용
+            StartCoroutine(BlinkAndBecomeInvincible());
+        }
+    }
+
+
 
     // 무적 상태로 전환하고 깜빡이는 효과 처리
     private IEnumerator BlinkAndBecomeInvincible()

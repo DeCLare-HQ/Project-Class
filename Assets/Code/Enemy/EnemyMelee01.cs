@@ -23,7 +23,8 @@ public class EnemyMelee01 : MonoBehaviour
     private SkeletonAnimation skeletonAnimation; // SkeletonAnimation 참조
 
     private Color originalColor; // 원래 색상 저장
-    private float currentHealth; // 적의 현재 체력
+    private float currentHealth; // 현재 체력
+
 
     private void Start()
     {
@@ -31,16 +32,16 @@ public class EnemyMelee01 : MonoBehaviour
         enemyAnimationController = GetComponent<EnemyMelee01AnimationController>();
         skeletonAnimation = GetComponent<SkeletonAnimation>(); // SkeletonAnimation 컴포넌트 참조 추가
 
-        // 적의 기본 색상 저장
+        // 기본 색상 저장
         originalColor = skeletonAnimation.skeleton.GetColor(); // Spine의 기본 색상 저장
 
         isFacingLeft = false; // 기본 스프라이트가 오른쪽을 바라본다고 가정
-        currentHealth = enemyState.health; // 적의 최대 체력으로 초기화
+        currentHealth = enemyState.health; // 최대 체력으로 초기화
     }
 
     private void Update()
     {
-        if (!isHurt && !isAtEdge) // 피격 상태가 아닐 때만 이동
+        if (!isHurt && !isAtEdge) // 피격 상태나 낭떠러지 상태가 아닐 때만 이동
         {
             Move(); // 이동 실행
         }
@@ -140,24 +141,24 @@ public class EnemyMelee01 : MonoBehaviour
         transform.localScale = theScale;
     }
 
-    // 적이 근접 공격에 맞았을 때 호출 (물리 공격력 - 물리 방어력)
+    // 근접 공격에 맞았을 때 호출 (물리 공격력 - 물리 방어력)
     public void TakeDamage(float physicalDamage)
     {
-        StartCoroutine(HurtRoutine(Color.red, physicalDamage)); // 근접 공격 시 파란색으로 변경
+        StartCoroutine(HurtRoutine(Color.red, physicalDamage)); // 빨간색으로 변경
     }
 
-    // 적이 원거리 공격(투사체)에 맞았을 때 호출 (마법 공격력 - 마법 방어력)
+    // 원거리 공격에 맞았을 때 호출 (마법 공격력 - 마법 방어력)
     public void TakeDamageFromProjectile(float magicDamage)
     {
-        StartCoroutine(HurtRoutine(Color.blue, magicDamage)); // 원거리 공격 시 동일하게 파란색으로 변경
+        StartCoroutine(HurtRoutine(Color.blue, magicDamage)); // 파란색으로 변경
     }
 
-    // 피격 처리 코루틴 (색상과 데미지를 받아 처리)
+    // 피격 처리 코루틴
     private IEnumerator HurtRoutine(Color hurtColor, float damage)
     {
         isHurt = true; // 피격 상태 설정
 
-        // 적의 색상을 파라미터로 받은 색상으로 변경 (SkeletonAnimation의 색상 변경)
+        // 색상 변경
         skeletonAnimation.skeleton.SetColor(hurtColor);
 
         // 데미지 계산 및 체력 감소

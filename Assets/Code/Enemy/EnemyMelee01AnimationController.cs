@@ -9,7 +9,9 @@ public class EnemyMelee01AnimationController : MonoBehaviour
 
     private const string IdleAnimation = "Idle"; // Idle 애니메이션 이름
     private const string WalkAnimation = "walk"; // Walk 애니메이션 이름
-    private const string HurtAnimation = "hurt"; // 추가된 hurt 애니메이션 이름
+    private const string HurtAnimation = "hurt"; // hurt 애니메이션 이름
+    private const string AttackAnimation = "attack"; // attack 애니메이션 이름
+
 
     private bool isAnimationComplete = false; // 애니메이션 완료 여부 확인
 
@@ -45,6 +47,13 @@ public class EnemyMelee01AnimationController : MonoBehaviour
     {
         isAnimationComplete = false; // 애니메이션 완료 여부 초기화
         SetAnimation(HurtAnimation, false); // Hurt 애니메이션을 한 번 실행
+    }
+
+    // Attack 애니메이션 실행
+    public void PlayAttackAnimation()
+    {
+        isAnimationComplete = false; // 애니메이션 완료 여부 초기화
+        SetAnimation(AttackAnimation, false); // Attack 애니메이션을 한 번 실행
     }
 
     // 애니메이션이 완료되었을 때 호출되는 메서드
