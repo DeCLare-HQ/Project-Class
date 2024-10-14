@@ -12,6 +12,11 @@ public class EnemyMelee01 : MonoBehaviour
     private bool isAtEdge = false; // 낭떠러지에 도달했는지 여부
 
     private bool isHurt = false; // 피격 상태 여부 확인
+    private bool playerInRange = false; // 플레이어가 감지 범위 안에 있는지 여부 확인
+
+    public Vector2 detectionBoxSize = new Vector2(2f, 2f); // 감지 범위 크기 (가로, 세로)
+    public Transform detectionPoint; // 감지 범위의 중심이 될 빈 오브젝트
+    public LayerMask playerLayer; // 플레이어 감지 레이어
 
     private StateEnemyMelee01 enemyState; // 능력치 참조
     private EnemyMelee01AnimationController enemyAnimationController; // 애니메이션 컨트롤러 참조
@@ -39,6 +44,39 @@ public class EnemyMelee01 : MonoBehaviour
         {
             Move(); // 이동 실행
         }
+
+        // 플레이어 감지 체크
+        playerInRange = DetectPlayer();
+
+        if (playerInRange)
+        {
+            Debug.Log("플레이어 감지됨!");
+        }
+    }
+
+    // 플레이어 감지
+    private bool DetectPlayer()
+    {
+        Collider2D[] hits = Physics2D.OverlapBoxAll(detectionPoint.position, detectionBoxSize, 0f, playerLayer);
+
+        foreach (var hit in hits)
+        {
+            if (hit.CompareTag("Player"))
+            {
+                return true; // 플레이어가 감지됨
+            }
+        }
+        return false; // 플레이어 감지되지 않음
+    }
+
+    // 디버깅용 감지 범위 시각화
+    private void OnDrawGizmosSelected()
+    {
+        if (detectionPoint == null) return;
+
+        // 감지 범위를 시각적으로 표시
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(detectionPoint.position, detectionBoxSize);
     }
 
     // 이동

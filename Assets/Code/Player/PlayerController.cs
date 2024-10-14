@@ -41,15 +41,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform firePoint;  // 투사체 발사 위치
     [SerializeField] Vector3 bulletScale = new Vector3(0.5f, 0.5f, 0.5f); // 투사체 크기
 
-    // 무적 상태 처리
+    // 무적 상태
     private bool isInvincible = false; // 무적 상태 여부
     private float invincibilityDuration = 1.0f; // 무적 상태 지속 시간
     private Color originalColor; // 원래 색상 저장
     private SkeletonAnimation skeletonAnimation; // Spine의 SkeletonAnimation 참조
 
-    // 충돌 감지에 사용할 변수들
+    // 충돌 감지
     public LayerMask enemyLayerMask;  // 적의 레이어 마스크
-    public string enemyTag = "Enemy"; // 적의 태그 (적이 가진 태그)
+    public string enemyTag = "Enemy"; // 적 태그
     public Transform detectionBoxTransform; // 충돌 감지를 위한 Empty Object의 Transform
     public Vector2 detectionBoxSize = new Vector2(1.0f, 2.0f); // 사각형 범위 크기
 
@@ -64,14 +64,16 @@ public class PlayerController : MonoBehaviour
         // PlayerAnimationController 컴포넌트
         animationController = GetComponent<PlayerAnimationController>();
 
-        // SkeletonAnimation 참조
+        // SkeletonAnimation 컴포넌트
         skeletonAnimation = GetComponent<SkeletonAnimation>();
-        originalColor = skeletonAnimation.skeleton.GetColor();  // Spine 캐릭터의 원래 색상 저장
+        
+        // Spine 캐릭터의 원본 색상 저장
+        originalColor = skeletonAnimation.skeleton.GetColor();
     }
 
     void Update()
     {
-        // 방향키 입력 (좌우)
+        // 좌우 이동
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
         // 스프라이트 방향 변경
@@ -176,6 +178,7 @@ public class PlayerController : MonoBehaviour
         return hit.collider != null;
     }
 
+    // Raycast 바닥 확인
     void CheckAndPassThroughPlatform()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, platformCanDownLayer);
@@ -186,6 +189,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // 하단 점프 콜라이더 해제
     IEnumerator DisablePlatformCollider(Collider2D platformCollider)
     {
         platformCollider.enabled = false;
@@ -247,7 +251,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // 적과의 충돌 감지 (사각형 범위 내 적들 감지 - Tag 또는 Layer 사용)
+    // 적과 충돌 감지
     void CheckForEnemyCollision()
     {
         if (!isInvincible)
@@ -270,15 +274,15 @@ public class PlayerController : MonoBehaviour
     {
         if (enemy != null)
         {
-            // "적 공격력 - 플레이어 방어력" 데미지 공식 적용
+            // 적 공격력 - 플레이어 방어력 데미지 공식
             float damage = Mathf.Max(0, enemy.GetComponent<StateEnemyMelee01>().attackPower - playerState.defense);
 
-            // 플레이어 **currentHealth** 감소
+            // 플레이어 체력 감소
             playerState.currentHealth -= (int)damage;
             Debug.Log("플레이어가 받은 데미지: " + damage);
             Debug.Log("플레이어의 남은 체력: " + playerState.currentHealth);
 
-            // 체력이 0 이하이면 게임 오버 처리
+            // 체력이 0 이하 게임 오버
             if (playerState.currentHealth <= 0)
             {
                 Debug.Log("게임 오버");
@@ -292,13 +296,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // 무적 상태로 전환하고 깜빡이는 효과를 처리하는 코루틴
+    // 무적 상태로 전환하고 깜빡이는 효과 처리
     private IEnumerator BlinkAndBecomeInvincible()
     {
         isInvincible = true; // 무적 상태 시작
         skeletonAnimation.skeleton.SetColor(Color.black); // 플레이어를 검정색으로 변경
 
-        yield return new WaitForSeconds(0.1f); // 0.1초 후 다시 원래 색으로 복원
+        // 0.1초 후 다시 원래 색으로 복원
+        yield return new WaitForSeconds(0.1f);
         skeletonAnimation.skeleton.SetColor(originalColor);
 
         // 무적 상태 지속 시간 동안 추가 데미지를 받지 않음
@@ -307,7 +312,7 @@ public class PlayerController : MonoBehaviour
         isInvincible = false; // 무적 상태 해제
     }
 
-    // Gizmos로 충돌 감지 범위 시각화 (사각형으로 표시)
+    // 충돌 감지 범위 시각화
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
