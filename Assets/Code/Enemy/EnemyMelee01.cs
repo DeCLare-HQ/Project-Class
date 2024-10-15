@@ -13,10 +13,13 @@ public class EnemyMelee01 : MonoBehaviour
 
     private bool isHurt = false; // 피격 상태 여부 확인
     private bool playerInRange = false; // 플레이어가 감지 범위 안에 있는지 여부 확인
+    private bool isAttacking = false; // 공격 중인지 여부 확인
 
     public Vector2 detectionBoxSize = new Vector2(2f, 2f); // 감지 범위 크기 (가로, 세로)
     public Transform detectionPoint; // 감지 범위의 중심이 될 빈 오브젝트
     public LayerMask playerLayer; // 플레이어 감지 레이어
+    private PlayerController detectedPlayer; // 감지된 플레이어를 저장할 변수
+
 
     private StateEnemyMelee01 enemyState; // 능력치 참조
     private EnemyMelee01AnimationController enemyAnimationController; // 애니메이션 컨트롤러 참조
@@ -41,7 +44,7 @@ public class EnemyMelee01 : MonoBehaviour
 
     private void Update()
     {
-        if (!isHurt && !isAtEdge) // 피격 상태나 낭떠러지 상태가 아닐 때만 이동
+        if (!isHurt && !isAtEdge && !isAttacking) // 피격 상태나 낭떠러지 상태, 공격 상태가 아닐 때만 이동
         {
             Move(); // 이동 실행
         }
@@ -49,9 +52,11 @@ public class EnemyMelee01 : MonoBehaviour
         // 플레이어 감지 체크
         playerInRange = DetectPlayer();
 
-        if (playerInRange)
+        if (playerInRange && !isAttacking)
         {
             Debug.Log("플레이어 감지됨!");
+            StartCoroutine(HandleAttack()); // 공격 처리 시작
+
         }
     }
 
@@ -64,9 +69,12 @@ public class EnemyMelee01 : MonoBehaviour
         {
             if (hit.CompareTag("Player"))
             {
+                detectedPlayer = hit.GetComponent<PlayerController>(); // 감지된 플레이어 참조 저장
                 return true; // 플레이어가 감지됨
             }
         }
+
+        detectedPlayer = null; // 감지된 플레이어가 없을 경우 초기화
         return false; // 플레이어 감지되지 않음
     }
 
@@ -78,6 +86,32 @@ public class EnemyMelee01 : MonoBehaviour
         // 감지 범위를 시각적으로 표시
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(detectionPoint.position, detectionBoxSize);
+    }
+
+    // 플레이어 감지 시 공격 처리
+    private IEnumerator HandleAttack()
+    {
+        isAttacking = true; // 공격 상태로 전환
+
+        // 이동 중지 및 Idle 애니메이션 재생
+        enemyAnimationController.PlayIdleAnimation();
+
+        // 대기 후 공격 애니메이션 실행
+        yield return new WaitForSeconds(0.6f);
+        enemyAnimationController.PlayAttackAnimation();
+
+        // 공격 애니메이션 재생 중에도 플레이어가 감지 범위에 있는지 확인
+        if (detectedPlayer != null && DetectPlayer())
+        {
+            // 플레이어가 여전히 감지 범위에 있을 경우 데미지 적용
+            float damage = Mathf.Max(0, enemyState.attackPower - detectedPlayer.GetComponent<PlayerState>().defense);
+            detectedPlayer.TakeDamage(damage); // 플레이어에게 데미지 전달
+        }
+
+        // 공격 애니메이션이 끝날 때까지 대기
+        yield return new WaitUntil(() => enemyAnimationController.IsAnimationComplete());
+
+        isAttacking = false; // 공격 상태 해제
     }
 
     // 이동

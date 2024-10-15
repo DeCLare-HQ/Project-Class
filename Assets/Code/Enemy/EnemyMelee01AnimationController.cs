@@ -59,7 +59,7 @@ public class EnemyMelee01AnimationController : MonoBehaviour
     // 애니메이션이 완료되었을 때 호출되는 메서드
     private void OnAnimationComplete(TrackEntry trackEntry)
     {
-        if (trackEntry.Animation.Name == HurtAnimation) // Hurt 애니메이션이 끝났을 때만
+        if (trackEntry.Animation.Name == AttackAnimation || trackEntry.Animation.Name == HurtAnimation)
         {
             isAnimationComplete = true; // 애니메이션이 끝났음을 표시
         }
