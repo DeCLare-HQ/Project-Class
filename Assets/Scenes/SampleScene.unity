@@ -560,9 +560,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1081231768}
   smoothSpeed: 0.125
-  offset: {x: 3, y: -1, z: -10}
-  minBounds: {x: -3, y: -0.5}
-  maxBounds: {x: 3, y: 0.5}
+  offset: {x: 3, y: -1.5, z: -10}
+  minBounds: {x: -0.5, y: -0.5}
+  maxBounds: {x: 2, y: 0.5}
 --- !u!1 &861633401
 GameObject:
   m_ObjectHideFlags: 0
@@ -588,7 +588,7 @@ Transform:
   m_GameObject: {fileID: 861633401}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.69, y: 0.91, z: 261.60565}
+  m_LocalPosition: {x: 1.11, y: 0.91, z: 261.60565}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -695,6 +695,7 @@ GameObject:
   - component: {fileID: 1081231770}
   - component: {fileID: 1081231769}
   - component: {fileID: 1081231773}
+  - component: {fileID: 1081231774}
   m_Layer: 6
   m_Name: "\uC8FC\uC778\uACF5"
   m_TagString: Player
@@ -811,6 +812,7 @@ Transform:
   - {fileID: 861633402}
   - {fileID: 1974138961}
   - {fileID: 162178649}
+  - {fileID: 1211955437}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1081231769
@@ -866,8 +868,9 @@ MonoBehaviour:
   maxJumpCount: 2
   horizontalInput: 0
   pos: {fileID: 861633402}
-  boxSize: {x: 2.5, y: 2}
+  boxSize: {x: 3, y: 2}
   isAttacking: 1
+  attackDelay: 0.3
   bulletPref: {fileID: 6542470548250458597, guid: 2d0f4bc30ab9efb44a9896a3c1b2a693, type: 3}
   firePoint: {fileID: 1974138961}
   bulletScale: {x: 0.5, y: 0.5, z: 0.5}
@@ -961,6 +964,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddac664a5aec695478f8d25c64d73051, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1081231774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1081231764}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de5b11ec78c483d44a3a0e579b5c25be, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  meleeEffectPrefab: {fileID: 3774540908893305580, guid: bf374b589e179e64da87193f41714367, type: 3}
+  effectSpawnPoint: {fileID: 1211955437}
+  effectDuration: 0.4
+  effectDelay: 0.2
+--- !u!1 &1211955436
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1211955437}
+  m_Layer: 0
+  m_Name: EffectSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1211955437
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211955436}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.23, y: 1.14, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1081231768}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1974138960
 GameObject:
   m_ObjectHideFlags: 0

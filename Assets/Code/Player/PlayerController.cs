@@ -13,7 +13,10 @@ public class PlayerController : MonoBehaviour
     private PlayerState playerState;
 
     // PlayerAnimationController 참조
-    public PlayerAnimationController animationController;  // 애니메이션 컨트롤러 참조 추가
+    public PlayerAnimationController animationController;
+
+    // PlayerEffect 참조
+    private PlayerEffect playerEffect;
 
     // 점프
     public float groundCheckDistance;
@@ -33,7 +36,9 @@ public class PlayerController : MonoBehaviour
     private float curTime;
     public Transform pos;
     public Vector2 boxSize;
-    public bool isAttacking = false;  // 공격 중인지 확인
+    public bool isAttacking = false;
+    public float attackDelay = 0.3f;  // 공격 딜레이
+
 
     // 원거리 공격
     [SerializeField] GameObject bulletPref;
@@ -63,6 +68,9 @@ public class PlayerController : MonoBehaviour
 
         // PlayerAnimationController 컴포넌트
         animationController = GetComponent<PlayerAnimationController>();
+
+        // PlayerEffect 컴포넌트
+        playerEffect = GetComponent<PlayerEffect>();
 
         // SkeletonAnimation 컴포넌트
         skeletonAnimation = GetComponent<SkeletonAnimation>();
@@ -205,6 +213,22 @@ public class PlayerController : MonoBehaviour
         // 상체에 근접 공격 애니메이션 실행 (트랙 1)
         animationController.PlayMeleeAttackAnimation();
 
+        // 근접 공격 이펙트 생성
+        playerEffect.SpawnMeleeEffect();
+
+        // 적에게 데미지를 줄 때 딜레이 적용
+        StartCoroutine(DealDamageWithDelay(attackDelay));
+
+        curTime = playerState.meleeAttackCoolTime; // 쿨타임 설정
+    }
+
+    // 근접 공격이 적에게 데미지를 주는 코드
+    private IEnumerator DealDamageWithDelay(float delay)
+    {
+        // 딜레이 시간만큼 대기
+        yield return new WaitForSeconds(delay);
+
+        // 딜레이 후에 데미지를 적용
         Collider2D[] collider2Ds = Physics2D.OverlapBoxAll(pos.position, boxSize, 0);
         foreach (Collider2D collider in collider2Ds)
         {
@@ -222,8 +246,6 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-
-        curTime = playerState.meleeAttackCoolTime; // 쿨타임 설정
     }
 
     // 원거리 공격

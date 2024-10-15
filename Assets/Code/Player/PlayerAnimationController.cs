@@ -6,6 +6,7 @@ public class PlayerAnimationController : MonoBehaviour
     private SkeletonAnimation skeletonAnimation;
     private PlayerState playerState;
     private PlayerController playerController;
+
     private string currentLowerBodyAnimation;  // 하체 애니메이션 추적
     private string currentUpperBodyAnimation;  // 상체 애니메이션 추적
 
@@ -55,7 +56,7 @@ public class PlayerAnimationController : MonoBehaviour
         }
     }
 
-    // **하체 애니메이션 실행**
+    // 하체 애니메이션 실행
     public void SetLowerBodyAnimation(string animationName, bool loop)
     {
         if (currentLowerBodyAnimation == animationName) return;  // 동일 애니메이션 중복 실행 방지
@@ -64,28 +65,28 @@ public class PlayerAnimationController : MonoBehaviour
         currentLowerBodyAnimation = animationName;
     }
 
-    // **근접 공격 애니메이션 실행 (트랙 1)**
+    // 근접 공격 애니메이션 실행 (트랙 1)
     public void PlayMeleeAttackAnimation()
     {
         isAttacking = true;
         SetUpperBodyAnimation(MeleeAttackAnimation, false);  // 트랙 1에서 실행 (상체)
     }
 
-    // **원거리 공격 애니메이션 실행 (트랙 1)**
+    // 원거리 공격 애니메이션 실행 (트랙 1)
     public void PlayRangedAttackAnimation()
     {
         isAttacking = true;
         SetUpperBodyAnimation(RangedAttackAnimation, false);  // 트랙 1에서 실행 (상체)
     }
 
-    // **상체 애니메이션 실행**
+    // 상체 애니메이션 실행
     public void SetUpperBodyAnimation(string animationName, bool loop)
     {
         skeletonAnimation.state.SetAnimation(1, animationName, loop);  // 트랙 1에서 실행 (상체)
         currentUpperBodyAnimation = animationName;
     }
 
-    // **애니메이션 완료 이벤트 처리**
+    // 애니메이션 완료 이벤트 처리
     private void OnAnimationComplete(Spine.TrackEntry trackEntry)
     {
         // 상체 공격 애니메이션 완료 시 다시 하체 애니메이션과 동기화
