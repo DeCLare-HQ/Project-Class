@@ -977,7 +977,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   meleeEffectPrefab: {fileID: 3774540908893305580, guid: bf374b589e179e64da87193f41714367, type: 3}
-  meleeEffectSpawnPoint: {fileID: 0}
+  meleeEffectSpawnPoint: {fileID: 1211955437}
   meleeEffectDuration: 0.6
   meleeEffectDelay: 0.2
   rangedEffectPrefab: {fileID: 7529517662094456171, guid: 3b9d8089ccb4f9c4f96ccfed3d10bc01, type: 3}
@@ -1009,7 +1009,7 @@ Transform:
   m_GameObject: {fileID: 1211955436}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.25, y: 0.87, z: 0}
+  m_LocalPosition: {x: 1.25, y: 1.05, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
