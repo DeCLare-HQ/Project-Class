@@ -258,6 +258,9 @@ public class PlayerController : MonoBehaviour
             // 원거리 공격 애니메이션 실행
             animationController.PlayRangedAttackAnimation();
 
+            // 원거리 공격 이펙트 생성
+            playerEffect.SpawnRangedEffect();
+
             // firePoint 위치에서 발사
             Vector3 direction = transform.right * transform.localScale.x;
             GameObject bullet = Instantiate(bulletPref, firePoint.position, Quaternion.identity);
