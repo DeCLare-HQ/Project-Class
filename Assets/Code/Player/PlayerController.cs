@@ -173,6 +173,9 @@ public class PlayerController : MonoBehaviour
     // 점프
     void Jump()
     {
+        // 점프 이펙트 생성
+        playerEffect.SpawnJumpEffect();
+
         rigidbody2D.velocity = new Vector2(rigidbody2D.velocity.x, 0);
         rigidbody2D.velocity += Vector2.up * playerState.jumpPower;
         JumpCount--;

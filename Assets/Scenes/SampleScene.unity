@@ -377,6 +377,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62312aaad1178204d90829666195fa74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &111300641
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 111300642}
+  m_Layer: 0
+  m_Name: RangedEffectSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &111300642
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 111300641}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1.131, y: 0.785, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1081231768}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &162178648
 GameObject:
   m_ObjectHideFlags: 0
@@ -813,6 +844,8 @@ Transform:
   - {fileID: 1974138961}
   - {fileID: 162178649}
   - {fileID: 1211955437}
+  - {fileID: 111300642}
+  - {fileID: 1449393049}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1081231769
@@ -978,12 +1011,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meleeEffectPrefab: {fileID: 3774540908893305580, guid: bf374b589e179e64da87193f41714367, type: 3}
   meleeEffectSpawnPoint: {fileID: 1211955437}
-  meleeEffectDuration: 0.6
+  meleeEffectDuration: 0.5
   meleeEffectDelay: 0.2
   rangedEffectPrefab: {fileID: 7529517662094456171, guid: 3b9d8089ccb4f9c4f96ccfed3d10bc01, type: 3}
-  rangedEffectSpawnPoint: {fileID: 1211955437}
+  rangedEffectSpawnPoint: {fileID: 111300642}
   rangedEffectDuration: 0.4
   rangedEffectDelay: 0.1
+  jumpEffectPrefab: {fileID: 7524203128899953766, guid: 3d6b05715be707548963492fd1e1ccc9, type: 3}
+  jumpEffectSpawnPoint: {fileID: 1449393049}
+  jumpEffectDuration: 0.5
+  jumpEffectDelay: 0
 --- !u!1 &1211955436
 GameObject:
   m_ObjectHideFlags: 0
@@ -994,7 +1031,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1211955437}
   m_Layer: 0
-  m_Name: EffectSpawn
+  m_Name: MeleeEffectSpawn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1009,7 +1046,38 @@ Transform:
   m_GameObject: {fileID: 1211955436}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.25, y: 1.05, z: 0}
+  m_LocalPosition: {x: 1.25, y: 1.09, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1081231768}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1449393048
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1449393049}
+  m_Layer: 0
+  m_Name: JumpEffectSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1449393049
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1449393048}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.003, y: 0.004, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1040,7 +1108,7 @@ Transform:
   m_GameObject: {fileID: 1974138960}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.91, y: 0.79, z: 114.60568}
+  m_LocalPosition: {x: 1.016, y: 0.79, z: 114.60568}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
