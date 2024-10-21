@@ -6,7 +6,7 @@ using Spine.Unity;
 public class EnemyMelee01 : MonoBehaviour
 {
     public LayerMask groundLayer; // 바닥 감지 레이어
-    public float groundCheckDistance = 2f; // 바닥 감지 Raycast 거리
+    public float groundCheckDistance = 0.5f; // 바닥 감지 Raycast 거리
     private bool isGrounded = true; // 바닥 위에 있는지 여부
     private bool isFacingLeft = true; // 스프라이트 기본 방향이 왼쪽이면 true로 설정
     private bool isAtEdge = false; // 낭떠러지에 도달했는지 여부
