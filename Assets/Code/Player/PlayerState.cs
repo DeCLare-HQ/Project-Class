@@ -33,6 +33,7 @@ public class PlayerState : MonoBehaviour
 
     [Header("인벤토리 설정")]
     public int potionCount = 3;             // 회복약 소지 개수
+    public int maxPotionCount = 3;             // 회복약 최대 소지 개수
     public int healAmount = 20;              // 회복약 1개의 체력 회복량
     public int inventorySlot = 5;           // 인벤토리 칸 개수
     public int skillSlot = 5;               // 스킬 칸 개수
