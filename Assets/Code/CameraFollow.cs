@@ -10,6 +10,31 @@ public class CameraFollow : MonoBehaviour
     public Vector2 minBounds;  // 최소 X, Y
     public Vector2 maxBounds;  // 최대 X, Y
 
+    // 플레이어 찾기 (씬 전환 후에도 적용)
+    void Start()
+    {
+        // 처음 씬 로드 시 또는 씬 전환 후에 플레이어를 찾아 할당
+        if (player == null)
+        {
+            FindPlayer();
+        }
+    }
+
+    // 씬 전환 후 플레이어를 찾기 위한 메서드
+    void OnEnable()
+    {
+        FindPlayer();
+    }
+
+    void FindPlayer()
+    {
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player"); // Player 태그로 오브젝트 찾기
+        if (playerObj != null)
+        {
+            player = playerObj.transform;
+        }
+    }
+
     // 카메라 이동 로직
     void LateUpdate()
     {
