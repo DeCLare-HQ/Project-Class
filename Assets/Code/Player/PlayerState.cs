@@ -4,11 +4,8 @@ using UnityEngine;
 
 public class PlayerState : MonoBehaviour
 {
-    private void Awake()
-    {
-        DontDestroyOnLoad(this.gameObject);
-    }
-    
+    public static PlayerState instance;
+
     [Header("근접 공격 능력치 설정")]
     public float physicalAttackPower = 10.0f; // 물리 공격력
     public float meleeAttackCoolTime = 1.0f;  // 근접 공격 간격
@@ -39,4 +36,25 @@ public class PlayerState : MonoBehaviour
     public int skillSlot = 5;               // 스킬 칸 개수
     public int money;                       // 돈
     public int skillPoint;                  // 스킬 포인트
+
+    private void Awake()
+    {
+        // Singleton 적용: 씬이 전환될 때 이 인스턴스를 유지하고, 중복된 인스턴스 제거
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject); // 이 오브젝트는 씬이 전환되어도 파괴되지 않음
+            Debug.Log("PlayerState initialized.");
+        }
+        else if (instance != this)
+        {
+            Debug.Log("Duplicate PlayerState destroyed.");
+            Destroy(gameObject); // 이미 존재하는 인스턴스가 있으면 새로 생성된 것은 삭제
+        }
+    }
+    void OnEnable()
+    {
+        Debug.Log("Current Health after scene load: " + PlayerState.instance.currentHealth);
+        Debug.Log("Potion Count after scene load: " + PlayerState.instance.potionCount);
+    }
 }

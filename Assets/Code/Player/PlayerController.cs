@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Spine.Unity;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -77,6 +78,24 @@ public class PlayerController : MonoBehaviour
         
         // Spine 캐릭터의 원본 색상 저장
         originalColor = skeletonAnimation.skeleton.GetColor();
+
+        playerState = PlayerState.instance;  // PlayerState Singleton 참조
+        InitializePlayerData();
+
+        SceneManager.sceneLoaded += OnSceneLoaded; // 씬 로드 시 호출될 메서드 등록
+    }
+
+    void InitializePlayerData()
+    {
+        // PlayerState의 데이터를 기반으로 PlayerController의 데이터 동기화
+        // 체력 및 회복약 수를 PlayerState에서 가져와 반영
+        int currentHealth = playerState.currentHealth;
+        int potionCount = playerState.potionCount;
+    }
+
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded; // 씬 언로드 시 이벤트 해제
     }
 
     void Update()
@@ -383,6 +402,24 @@ public class PlayerController : MonoBehaviour
         else
         {
             Debug.Log("회복약 없음");
+        }
+    }
+
+    // 씬 로드 완료 후 호출되는 메서드
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == "ST1") // ST1 씬이 로드된 경우에만 실행
+        {
+            GameObject spawnPoint = GameObject.FindWithTag("SpawnPoint"); // 스폰 포인트 찾기
+            if (spawnPoint != null)
+            {
+                transform.position = spawnPoint.transform.position; // 스폰 위치로 이동
+                Debug.Log("Player spawned at SpawnPoint in ST1.");
+            }
+            else
+            {
+                Debug.LogWarning("SpawnPoint not found in ST1 scene.");
+            }
         }
     }
 }

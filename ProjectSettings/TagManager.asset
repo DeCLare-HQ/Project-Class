@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - PlatformCanDown
   - Portal
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX

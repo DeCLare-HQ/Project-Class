@@ -1,10 +1,9 @@
-// Portal.cs
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Portal : MonoBehaviour
+public class PortalTEST : MonoBehaviour
 {
     public string targetSceneName = "ST1"; // 이동할 씬 이름
 
