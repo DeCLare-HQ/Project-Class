@@ -32,6 +32,7 @@ public class PlayerState : MonoBehaviour
     public int potionCount = 3;             // 회복약 소지 개수
     public int maxPotionCount = 3;             // 회복약 최대 소지 개수
     public int healAmount = 20;              // 회복약 1개의 체력 회복량
+    public List<Item> inventory = new List<Item>(); // 인벤토리 리스트
     public int inventorySlot = 5;           // 인벤토리 칸 개수
     public int skillSlot = 5;               // 스킬 칸 개수
     public int money;                       // 돈
@@ -52,9 +53,87 @@ public class PlayerState : MonoBehaviour
             Destroy(gameObject); // 이미 존재하는 인스턴스가 있으면 새로 생성된 것은 삭제
         }
     }
-    void OnEnable()
+    // 인벤토리에 아이템 추가 메서드
+    public bool AddItemToInventory(Item newItem)
     {
-        Debug.Log("Current Health after scene load: " + PlayerState.instance.currentHealth);
-        Debug.Log("Potion Count after scene load: " + PlayerState.instance.potionCount);
+        if (inventory.Count < inventorySlot)
+        {
+            inventory.Add(newItem);
+            ApplyItemEffect(newItem); // 아이템 효과 적용
+            Debug.Log($"{newItem.itemName} added to inventory and effect applied.");
+            return true;
+        }
+        else
+        {
+            Debug.LogWarning("Inventory is full.");
+            return false;
+        }
+    }
+
+    // 인벤토리에서 아이템 제거 메서드
+    public bool RemoveItemFromInventory(Item itemToRemove)
+    {
+        if (inventory.Contains(itemToRemove))
+        {
+            RemoveItemEffect(itemToRemove); // 아이템 효과 제거
+            inventory.Remove(itemToRemove);
+            Debug.Log($"{itemToRemove.itemName} removed from inventory and effect removed.");
+            return true;
+        }
+        else
+        {
+            Debug.LogWarning("Item not found in inventory.");
+            return false;
+        }
+    }
+
+    // 아이템 효과 적용 메서드
+    private void ApplyItemEffect(Item item)
+    {
+        switch (item.itemType)
+        {
+            case ItemType.HealthMax:
+                maxHealth += (int)item.effectAmount;
+                currentHealth = Mathf.Min(currentHealth, maxHealth);
+                Debug.Log($"{item.itemName} applied: Max Health increased by {item.effectAmount}");
+                break;
+            case ItemType.MeleeAttackBoost:
+                physicalAttackPower += item.effectAmount;
+                Debug.Log($"{item.itemName} applied: Physical Attack Power increased by {item.effectAmount}");
+                break;
+            case ItemType.MagicAttackBoost:
+                magicAttackPower += item.effectAmount;
+                Debug.Log($"{item.itemName} applied: Magic Attack Power increased by {item.effectAmount}");
+                break;
+            case ItemType.DefenseBoost:
+                defense += item.effectAmount;
+                Debug.Log($"{item.itemName} applied: Defense increased by {item.effectAmount}");
+                break;
+        }
+    }
+
+    // 아이템 효과 제거 메서드
+    private void RemoveItemEffect(Item item)
+    {
+        switch (item.itemType)
+        {
+            case ItemType.HealthMax:
+                maxHealth -= (int)item.effectAmount;
+                currentHealth = Mathf.Min(currentHealth, maxHealth);
+                Debug.Log($"{item.itemName} removed: Max Health decreased by {item.effectAmount}");
+                break;
+            case ItemType.MeleeAttackBoost:
+                physicalAttackPower -= item.effectAmount;
+                Debug.Log($"{item.itemName} removed: Physical Attack Power decreased by {item.effectAmount}");
+                break;
+            case ItemType.MagicAttackBoost:
+                magicAttackPower -= item.effectAmount;
+                Debug.Log($"{item.itemName} removed: Magic Attack Power decreased by {item.effectAmount}");
+                break;
+            case ItemType.DefenseBoost:
+                defense -= item.effectAmount;
+                Debug.Log($"{item.itemName} removed: Defense decreased by {item.effectAmount}");
+                break;
+        }
     }
 }
