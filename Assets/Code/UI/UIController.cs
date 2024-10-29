@@ -6,24 +6,27 @@ public class UIController : MonoBehaviour
     public PlayerState playerState;   // PlayerState 스크립트 참조
     public Image healthBarImage;      // 체력바 이미지
     public Image potionBarImage;      // 회복약 개수 이미지
-
-    private void OnEnable()
-    {
-        if (playerState == null)
-        {
-            playerState = FindObjectOfType<PlayerState>();  // PlayerState 자동 검색
-        }
-
-        // 씬 전환 후에도 UI를 현재 상태로 업데이트
-        UpdateHealthBar();
-        UpdatePotionBar();
-    }
+    private bool isInitialized = false; // 초기화 확인용 플래그
 
     private void Update()
     {
-        // 매 프레임마다 UI 업데이트
-        UpdateHealthBar();
-        UpdatePotionBar();
+        // playerState가 준비되었는지 확인하고, 처음 준비되면 UI 초기화
+        if (playerState == null)
+        {
+            playerState = FindObjectOfType<PlayerState>();
+            if (playerState != null && !isInitialized)
+            {
+                isInitialized = true; // 초기화 완료
+                UpdateHealthBar();
+                UpdatePotionBar();
+            }
+        }
+        else
+        {
+            // playerState가 준비된 후 매 프레임마다 UI 업데이트
+            UpdateHealthBar();
+            UpdatePotionBar();
+        }
     }
 
     // 체력바 UI를 업데이트하는 메서드
@@ -31,7 +34,6 @@ public class UIController : MonoBehaviour
     {
         if (healthBarImage != null && playerState != null)
         {
-            // Fill Amount를 현재 체력 / 최대 체력 비율로 설정 (0 ~ 1 사이)
             healthBarImage.fillAmount = (float)playerState.currentHealth / playerState.maxHealth;
         }
     }
@@ -41,7 +43,6 @@ public class UIController : MonoBehaviour
     {
         if (potionBarImage != null && playerState != null)
         {
-            // Fill Amount를 현재 개수 / 최대 개수 비율로 설정 (0 ~ 1 사이)
             potionBarImage.fillAmount = (float)playerState.potionCount / playerState.maxPotionCount;
         }
     }

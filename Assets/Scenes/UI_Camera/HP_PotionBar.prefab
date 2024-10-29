@@ -102,6 +102,7 @@ GameObject:
   - component: {fileID: 3832529884267658294}
   - component: {fileID: 355790740947838785}
   - component: {fileID: 8284541754329640624}
+  - component: {fileID: 3106618005228719115}
   m_Layer: 5
   m_Name: HP_PotionBar
   m_TagString: Untagged
@@ -193,6 +194,21 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &3106618005228719115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1145711434534596700}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9834390ca059aa4ea03283486b6203a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerState: {fileID: 0}
+  healthBarImage: {fileID: 2902562947976989547}
+  potionBarImage: {fileID: 8871995621260507561}
 --- !u!1 &1343930583240032590
 GameObject:
   m_ObjectHideFlags: 0
