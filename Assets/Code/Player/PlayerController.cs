@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour
     // PlayerEffect 참조
     private PlayerEffect playerEffect;
 
+    // Gameover 스크립트 참조
+    private Gameover gameOverManager;
+
     // 점프
     public float groundCheckDistance;
     public LayerMask platformLayer;
@@ -83,6 +86,9 @@ public class PlayerController : MonoBehaviour
         InitializePlayerData();
 
         SceneManager.sceneLoaded += OnSceneLoaded; // 씬 로드 시 호출될 메서드 등록
+
+        // Gameover 오브젝트 찾기 (씬에 있는 GameOver UI 오브젝트에 Gameover 스크립트가 연결된 상태여야 함)
+        gameOverManager = FindObjectOfType<Gameover>();
     }
 
     void InitializePlayerData()
@@ -343,6 +349,8 @@ public class PlayerController : MonoBehaviour
         if (playerState.currentHealth <= 0)
         {
             Debug.Log("게임 오버");
+            // Gameover 스크립트의 게임 오버 화면 호출
+            gameOverManager.ShowGameOverScreen();
             Destroy(gameObject); // 플레이어 오브젝트 삭제
         }
         else
@@ -351,8 +359,6 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(BlinkAndBecomeInvincible());
         }
     }
-
-
 
     // 무적 상태로 전환하고 깜빡이는 효과 처리
     private IEnumerator BlinkAndBecomeInvincible()
@@ -408,18 +414,18 @@ public class PlayerController : MonoBehaviour
     // 씬 로드 완료 후 호출되는 메서드
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == "ST1") // ST1 씬이 로드된 경우에만 실행
+        // 모든 씬에서 스폰 포인트를 찾음
+        GameObject spawnPoint = GameObject.FindWithTag("SpawnPoint");
+
+        if (spawnPoint != null)
         {
-            GameObject spawnPoint = GameObject.FindWithTag("SpawnPoint"); // 스폰 포인트 찾기
-            if (spawnPoint != null)
-            {
-                transform.position = spawnPoint.transform.position; // 스폰 위치로 이동
-                Debug.Log("Player spawned at SpawnPoint in ST1.");
-            }
-            else
-            {
-                Debug.LogWarning("SpawnPoint not found in ST1 scene.");
-            }
+            // 스폰 포인트가 존재하면 플레이어를 해당 위치로 이동
+            transform.position = spawnPoint.transform.position;
+            Debug.Log($"스폰 포인트로 이동: {scene.name}");
+        }
+        else
+        {
+            Debug.LogWarning($"스폰 포인트를 찾을 수 없음 씬: {scene.name}");
         }
     }
 }

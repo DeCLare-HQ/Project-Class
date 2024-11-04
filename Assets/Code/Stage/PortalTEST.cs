@@ -12,7 +12,6 @@ public class PortalTEST : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Player is inside the portal."); // 포탈에 플레이어가 있는지 확인
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 Debug.Log("UpArrow key pressed."); // 위쪽 방향키가 눌렸는지 확인
