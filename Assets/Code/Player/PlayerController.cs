@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     public Transform pos;
     public Vector2 boxSize;
     public bool isAttacking = false;
-    public float attackDelay = 0.3f;  // 공격 딜레이
+    public float meleeAttackDelay = 0.1f;  // 공격 딜레이
 
 
     // 원거리 공격
@@ -49,6 +49,8 @@ public class PlayerController : MonoBehaviour
     private float lastFireTime = 0;
     [SerializeField] Transform firePoint;  // 투사체 발사 위치
     [SerializeField] Vector3 bulletScale = new Vector3(0.5f, 0.5f, 0.5f); // 투사체 크기
+    public float rangeAttackDelay = 0.3f;  // 공격 딜레이
+    private float rangeCurTime = 0;
 
     // 무적 상태
     private bool isInvincible = false; // 무적 상태 여부
@@ -245,7 +247,7 @@ public class PlayerController : MonoBehaviour
         playerEffect.SpawnMeleeEffect();
 
         // 적에게 데미지를 줄 때 딜레이 적용
-        StartCoroutine(DealDamageWithDelay(attackDelay));
+        StartCoroutine(DealDamageWithDelay(meleeAttackDelay));
 
         curTime = playerState.meleeAttackCoolTime; // 쿨타임 설정
     }
@@ -289,19 +291,30 @@ public class PlayerController : MonoBehaviour
             // 원거리 공격 이펙트 생성
             playerEffect.SpawnRangedEffect();
 
-            // firePoint 위치에서 발사
-            Vector3 direction = transform.right * transform.localScale.x;
-            GameObject bullet = Instantiate(bulletPref, firePoint.position, Quaternion.identity);
-
-            float bulletDirection = transform.localScale.x > 0 ? 1f : -1f;
-
-            // 플레이어 방향에 따라 반전
-            bullet.transform.localScale = new Vector3(bulletScale.x * bulletDirection, bulletScale.y, bulletScale.z);
-
-            bullet.GetComponent<Rigidbody2D>().AddForce(direction * playerState.bulletFirePower, ForceMode2D.Impulse);
+            // 투사체 발사를 딜레이 후에 실행
+            StartCoroutine(FireProjectileWithDelay(rangeAttackDelay));
 
             lastFireTime = Time.time;
         }
+    }
+
+    // 투사체 발사를 딜레이 후에 실행하는 코루틴
+    IEnumerator FireProjectileWithDelay(float delay)
+    {
+        // 지정된 딜레이 시간만큼 대기
+        yield return new WaitForSeconds(delay);
+
+        // firePoint 위치에서 발사
+        Vector3 direction = transform.right * transform.localScale.x;
+        GameObject bullet = Instantiate(bulletPref, firePoint.position, Quaternion.identity);
+
+        float bulletDirection = transform.localScale.x > 0 ? 1f : -1f;
+
+        // 플레이어 방향에 따라 반전
+        bullet.transform.localScale = new Vector3(bulletScale.x * bulletDirection, bulletScale.y, bulletScale.z);
+
+        // 투사체에 힘을 가해 발사
+        bullet.GetComponent<Rigidbody2D>().AddForce(direction * playerState.bulletFirePower, ForceMode2D.Impulse);
     }
 
     // 적과 충돌 감지

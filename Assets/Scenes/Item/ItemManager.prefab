@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7425994612412106004
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5031787511824171808}
+  - component: {fileID: 1110945413250501483}
+  - component: {fileID: 4616369263343757187}
+  m_Layer: 0
+  m_Name: ItemManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5031787511824171808
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7425994612412106004}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.0080814, y: -0.46618193, z: -0.04924029}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1110945413250501483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7425994612412106004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d689dd5c8b119294ab30a58aa4ca8afc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  testMeleeSprite: {fileID: 21300000, guid: 2412d1d8498463f49ae6ebe3a66ffae9, type: 3}
+  testMagicSprite: {fileID: -478842568, guid: e0a8865a276fd5d4e83df3be8c9c39f5, type: 3}
+  testHealthSprite: {fileID: 21300000, guid: 0541ee580687de343bcdaa0f07d9c508, type: 3}
+  testDefenseSprite: {fileID: 21300000, guid: 387c5bc0fcdc16f40a0bd6a403fe79a4, type: 3}
+  testMelee:
+    itemName: 
+    itemType: 0
+    effectAmount: 0
+    itemSprite: {fileID: 0}
+  testMagic:
+    itemName: 
+    itemType: 0
+    effectAmount: 0
+    itemSprite: {fileID: 0}
+  testHealth:
+    itemName: 
+    itemType: 0
+    effectAmount: 0
+    itemSprite: {fileID: 0}
+  testDefense:
+    itemName: 
+    itemType: 0
+    effectAmount: 0
+    itemSprite: {fileID: 0}
+--- !u!114 &4616369263343757187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7425994612412106004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b951292905e7c9f4cacebd27aaa1151e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTransform: {fileID: 0}
+  itemManager: {fileID: 1110945413250501483}
+  itemLayer: Item
+  itemPhysicsMaterial: {fileID: 6200000, guid: e3f26cb348dd2274b8e58889c34cc67a, type: 2}

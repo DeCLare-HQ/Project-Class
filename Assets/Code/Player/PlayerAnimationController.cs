@@ -10,10 +10,10 @@ public class PlayerAnimationController : MonoBehaviour
     private string currentLowerBodyAnimation;  // 하체 애니메이션 추적
     private string currentUpperBodyAnimation;  // 상체 애니메이션 추적
 
-    private const string WalkAnimation = "Walk";
-    private const string IdleAnimation = "Idle";
-    private const string MeleeAttackAnimation = "Attack_melee";
-    private const string RangedAttackAnimation = "Attack_ranged";
+    private const string WalkAnimation = "walk";
+    private const string IdleAnimation = "idle";
+    private const string MeleeAttackAnimation = "attack_melee";
+    private const string RangedAttackAnimation = "attack_range";
 
     private bool isAttacking = false;
 

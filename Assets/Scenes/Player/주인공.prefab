@@ -74,7 +74,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: bae1c68a66cd6704397d8c8813bd0cf3, type: 2}
+  - {fileID: 2100000, guid: fa6df582b653ed94e984f228c54bd7f5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: 2b371bd863243b14592bddf8af1ea71c, type: 2}
+  skeletonDataAsset: {fileID: 11400000, guid: 90ce3c4c73897ca4e8b0270607401f75, type: 2}
   initialSkinName: 
   fixPrefabOverrideViaMeshFilter: 2
   initialFlipX: 0
@@ -237,10 +237,11 @@ MonoBehaviour:
   pos: {fileID: 5867413052977570523}
   boxSize: {x: 3, y: 2}
   isAttacking: 1
-  attackDelay: 0.3
+  meleeAttackDelay: 0.1
   bulletPref: {fileID: 6542470548250458597, guid: 2d0f4bc30ab9efb44a9896a3c1b2a693, type: 3}
   firePoint: {fileID: 1232316520297732250}
   bulletScale: {x: 0.5, y: 0.5, z: 0.5}
+  rangeAttackDelay: 0.3
   enemyLayerMask:
     serializedVersion: 2
     m_Bits: 128
@@ -271,7 +272,9 @@ MonoBehaviour:
   decelerationRate: 10
   jumpPower: 15
   potionCount: 3
+  maxPotionCount: 3
   healAmount: 20
+  inventory: []
   inventorySlot: 5
   skillSlot: 5
   money: 0
@@ -303,11 +306,11 @@ MonoBehaviour:
   meleeEffectPrefab: {fileID: 3774540908893305580, guid: bf374b589e179e64da87193f41714367, type: 3}
   meleeEffectSpawnPoint: {fileID: 2145786615586687731}
   meleeEffectDuration: 0.5
-  meleeEffectDelay: 0.2
+  meleeEffectDelay: 0.1
   rangedEffectPrefab: {fileID: 7529517662094456171, guid: 3b9d8089ccb4f9c4f96ccfed3d10bc01, type: 3}
   rangedEffectSpawnPoint: {fileID: 1069178511427992971}
   rangedEffectDuration: 0.4
-  rangedEffectDelay: 0.1
+  rangedEffectDelay: 0.3
   jumpEffectPrefab: {fileID: 7524203128899953766, guid: 3d6b05715be707548963492fd1e1ccc9, type: 3}
   jumpEffectSpawnPoint: {fileID: 5931131520546929238}
   jumpEffectDuration: 0.5
