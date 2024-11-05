@@ -45,11 +45,9 @@ public class PlayerState : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject); // 이 오브젝트는 씬이 전환되어도 파괴되지 않음
-            Debug.Log("PlayerState initialized.");
         }
         else if (instance != this)
         {
-            Debug.Log("Duplicate PlayerState destroyed.");
             Destroy(gameObject); // 이미 존재하는 인스턴스가 있으면 새로 생성된 것은 삭제
         }
     }
@@ -60,12 +58,12 @@ public class PlayerState : MonoBehaviour
         {
             inventory.Add(newItem);
             ApplyItemEffect(newItem); // 아이템 효과 적용
-            Debug.Log($"{newItem.itemName} added to inventory and effect applied.");
+            Debug.Log($"{newItem.itemName} 아이템 인벤토리에 추가");
             return true;
         }
         else
         {
-            Debug.LogWarning("Inventory is full.");
+            Debug.LogWarning("인벤토리가 가득 찼습니다.");
             return false;
         }
     }
@@ -77,12 +75,12 @@ public class PlayerState : MonoBehaviour
         {
             RemoveItemEffect(itemToRemove); // 아이템 효과 제거
             inventory.Remove(itemToRemove);
-            Debug.Log($"{itemToRemove.itemName} removed from inventory and effect removed.");
+            Debug.Log($"{itemToRemove.itemName} 아이템 인벤토리에서 제거.");
             return true;
         }
         else
         {
-            Debug.LogWarning("Item not found in inventory.");
+            Debug.LogWarning("아이템을 인벤토리에서 찾을 수 없습니다.");
             return false;
         }
     }

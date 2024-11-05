@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5031787511824171808}
   - component: {fileID: 1110945413250501483}
   - component: {fileID: 4616369263343757187}
+  - component: {fileID: 336809405790546047}
   m_Layer: 0
   m_Name: ItemManager
   m_TagString: Untagged
@@ -85,3 +86,21 @@ MonoBehaviour:
   itemManager: {fileID: 1110945413250501483}
   itemLayer: Item
   itemPhysicsMaterial: {fileID: 6200000, guid: e3f26cb348dd2274b8e58889c34cc67a, type: 2}
+--- !u!114 &336809405790546047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7425994612412106004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76c32f4189f526a4f9490e49dea12d22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item:
+    itemName: 
+    itemType: 0
+    effectAmount: 0
+    itemSprite: {fileID: 0}
+  pickupRange: 1
