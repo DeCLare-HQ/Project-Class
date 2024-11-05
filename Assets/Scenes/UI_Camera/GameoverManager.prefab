@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2973799662340522399}
   - component: {fileID: 3163923876440442834}
-  m_Layer: 11
+  m_Layer: 5
   m_Name: GameoverManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}

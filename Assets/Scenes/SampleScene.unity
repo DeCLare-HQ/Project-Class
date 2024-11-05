@@ -4829,6 +4829,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: ItemManager
       objectReference: {fileID: 0}
+    - target: {fileID: 7425994612412106004, guid: 94639da09690f7c42942c4ddbd0082b4, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4842,6 +4846,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3310406032397436525, guid: 043721db4f4e15741ab9e5f832672c34, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3983300831918895406, guid: 043721db4f4e15741ab9e5f832672c34, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -4922,14 +4930,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6180604447023232539, guid: 043721db4f4e15741ab9e5f832672c34, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6184841724721485624, guid: 043721db4f4e15741ab9e5f832672c34, type: 3}
       propertyPath: m_Name
       value: GameoverCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184841724721485624, guid: 043721db4f4e15741ab9e5f832672c34, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7092027192430774858, guid: 043721db4f4e15741ab9e5f832672c34, type: 3}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 8521712393605965253, guid: 043721db4f4e15741ab9e5f832672c34, type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5322,6 +5342,10 @@ PrefabInstance:
     - target: {fileID: 8287829238312537833, guid: af71497d5485c0a448d37b31e7e68f42, type: 3}
       propertyPath: m_Name
       value: GameoverManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 8287829238312537833, guid: af71497d5485c0a448d37b31e7e68f42, type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

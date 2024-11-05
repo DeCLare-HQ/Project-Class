@@ -50,7 +50,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform firePoint;  // 투사체 발사 위치
     [SerializeField] Vector3 bulletScale = new Vector3(0.5f, 0.5f, 0.5f); // 투사체 크기
     public float rangeAttackDelay = 0.3f;  // 공격 딜레이
-    private float rangeCurTime = 0;
 
     // 무적 상태
     private bool isInvincible = false; // 무적 상태 여부

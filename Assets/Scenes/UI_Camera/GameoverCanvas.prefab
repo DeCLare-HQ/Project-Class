@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8086680003954194330}
   - component: {fileID: 3886418115618229613}
   - component: {fileID: 7156610588607923710}
-  m_Layer: 11
+  m_Layer: 5
   m_Name: ReButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 1298573938344924224}
   - component: {fileID: 2290511529315406293}
   - component: {fileID: 1424315127891114531}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: GameoverText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -267,7 +267,7 @@ GameObject:
   - component: {fileID: 7092027192430774858}
   - component: {fileID: 994083899934007516}
   - component: {fileID: 8781803584498848702}
-  m_Layer: 11
+  m_Layer: 5
   m_Name: GameoverCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -369,7 +369,7 @@ GameObject:
   - component: {fileID: 5354517013696693720}
   - component: {fileID: 3360706374922746872}
   - component: {fileID: 6148044714097160928}
-  m_Layer: 11
+  m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -9,10 +9,32 @@ public class ItemSpawn : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Keypad1)) SpawnItem(itemManager.testMelee);
-        if (Input.GetKeyDown(KeyCode.Keypad2)) SpawnItem(itemManager.testMagic);
-        if (Input.GetKeyDown(KeyCode.Keypad3)) SpawnItem(itemManager.testHealth);
-        if (Input.GetKeyDown(KeyCode.Keypad4)) SpawnItem(itemManager.testDefense);
+        if (playerTransform == null)
+        {
+            FindPlayer();
+        }
+
+        if (playerTransform != null)
+        {
+            if (Input.GetKeyDown(KeyCode.Keypad1)) SpawnItem(itemManager.testMelee);
+            if (Input.GetKeyDown(KeyCode.Keypad2)) SpawnItem(itemManager.testMagic);
+            if (Input.GetKeyDown(KeyCode.Keypad3)) SpawnItem(itemManager.testHealth);
+            if (Input.GetKeyDown(KeyCode.Keypad4)) SpawnItem(itemManager.testDefense);
+        }
+    }
+
+    private void FindPlayer()
+    {
+        GameObject playerObject = GameObject.FindWithTag("Player");
+        if (playerObject != null)
+        {
+            playerTransform = playerObject.transform;
+            Debug.Log("Player Transform found and assigned.");
+        }
+        else
+        {
+            Debug.Log("Player not yet spawned, retrying...");
+        }
     }
 
     private void SpawnItem(Item item)
@@ -20,11 +42,14 @@ public class ItemSpawn : MonoBehaviour
         Vector3 spawnPosition = playerTransform.position;
         GameObject newItemObject = new GameObject(item.itemName);
 
-        // 스프라이트 렌더러 추가
+        // 스프라이트 렌더러
         SpriteRenderer spriteRenderer = newItemObject.AddComponent<SpriteRenderer>();
         spriteRenderer.sprite = item.itemSprite;
 
-        // Rigidbody2D 추가
+        //레이어 우선 순위
+        spriteRenderer.sortingOrder = 5;
+
+        // Rigidbody2D
         Rigidbody2D rb = newItemObject.AddComponent<Rigidbody2D>();
         rb.gravityScale = 1;
         rb.bodyType = RigidbodyType2D.Dynamic;
