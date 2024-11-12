@@ -6,6 +6,10 @@ public class BulletController : MonoBehaviour
 {
     void Start()
     {
+        if (GetComponent<Collider2D>() == null)
+        {
+            gameObject.AddComponent<CircleCollider2D>().isTrigger = false;
+        }
         Invoke("DestroyTime", 2.0f); // 투사체 자동 파괴 시간
     }
 

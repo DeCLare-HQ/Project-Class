@@ -9,24 +9,69 @@ public class Gameover : MonoBehaviour
 
     private void Start()
     {
-        gameOverUI.SetActive(false); // 게임 오버 UI를 기본으로 숨김
+        SceneManager.sceneLoaded += OnSceneLoaded; // 씬이 로드될 때마다 호출
+        InitializeUI();
+    }
 
-        // retryButton이 정상적으로 설정되었는지 확인
-        if (retryButton != null)
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded; // 씬 언로드 시 이벤트 해제
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        InitializeUI(); // 씬 이동 후 UI 요소 재설정
+    }
+
+    // UI 요소 초기화 메서드
+    private void InitializeUI()
+    {
+        // gameOverUI가 null이면 다시 찾음
+        if (gameOverUI == null)
         {
-            retryButton.onClick.AddListener(OnRetryButtonClicked); // 올바른 onClick 이벤트
+            gameOverUI = GameObject.Find("GameOverUI"); // 예: GameOverUI 오브젝트 이름
+            if (gameOverUI == null)
+            {
+                Debug.LogError("GameOver UI not found in the scene.");
+                return;
+            }
+        }
+
+        // 태그 "ReButton"으로 retryButton을 찾아 할당
+        GameObject retryButtonObject = GameObject.FindWithTag("ReButton");
+        if (retryButtonObject != null)
+        {
+            retryButton = retryButtonObject.GetComponent<Button>();
+            retryButton.onClick.RemoveAllListeners(); // 중복 리스너 제거
+            retryButton.onClick.AddListener(OnRetryButtonClicked);
+            Debug.Log("Retry Button assigned and click event set.");
         }
         else
         {
-            Debug.LogError("Retry Button is not assigned in the inspector.");
+            Debug.LogError("Retry Button with the tag 'ReButton' not found in the scene.");
         }
+
+        // 기본적으로 gameOverUI 비활성화
+        gameOverUI.SetActive(false);
     }
 
     // 게임 오버 화면을 표시하는 메서드
     public void ShowGameOverScreen()
     {
-        gameOverUI.SetActive(true);
-        Time.timeScale = 0; // 게임 일시정지
+        if (gameOverUI == null || retryButton == null)
+        {
+            InitializeUI(); // UI 요소 재설정
+        }
+
+        if (gameOverUI != null)
+        {
+            gameOverUI.SetActive(true);
+            Time.timeScale = 0; // 게임 일시정지
+        }
+        else
+        {
+            Debug.LogWarning("GameOver UI is still missing after initialization.");
+        }
     }
 
     // 로비로 돌아가는 버튼을 클릭했을 때 실행되는 메서드

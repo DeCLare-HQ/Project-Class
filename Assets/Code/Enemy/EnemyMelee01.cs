@@ -28,12 +28,14 @@ public class EnemyMelee01 : MonoBehaviour
     private Color originalColor; // 원래 색상 저장
     private float currentHealth; // 현재 체력
 
+    private EnemyItemDrop itemDrop; //아이템 드롭 테이블 참조
 
     private void Start()
     {
         enemyState = GetComponent<StateEnemyMelee01>();
         enemyAnimationController = GetComponent<EnemyMelee01AnimationController>();
-        skeletonAnimation = GetComponent<SkeletonAnimation>(); // SkeletonAnimation 컴포넌트 참조 추가
+        skeletonAnimation = GetComponent<SkeletonAnimation>();
+        itemDrop = GetComponent<EnemyItemDrop>();
 
         // 기본 색상 저장
         originalColor = skeletonAnimation.skeleton.GetColor(); // Spine의 기본 색상 저장
@@ -204,6 +206,7 @@ public class EnemyMelee01 : MonoBehaviour
         if (currentHealth <= 0)
         {
             Debug.Log("죽음");
+            itemDrop.HandleEnemyDeath();  // 죽으면 아이템 드롭 시도
             Destroy(gameObject);
             yield break; // 죽음 시 코루틴 종료
         }

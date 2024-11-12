@@ -87,9 +87,7 @@ public class PlayerController : MonoBehaviour
         InitializePlayerData();
 
         SceneManager.sceneLoaded += OnSceneLoaded; // 씬 로드 시 호출될 메서드 등록
-
-        // Gameover 오브젝트 찾기 (씬에 있는 GameOver UI 오브젝트에 Gameover 스크립트가 연결된 상태여야 함)
-        gameOverManager = FindObjectOfType<Gameover>();
+        FindGameOverManager(); // 현재 씬에서 Gameover 매니저 찾기
     }
 
     void InitializePlayerData()
@@ -360,10 +358,20 @@ public class PlayerController : MonoBehaviour
         // 체력이 0 이하이면 게임 오버 처리
         if (playerState.currentHealth <= 0)
         {
-            Debug.Log("게임 오버");
-            // Gameover 스크립트의 게임 오버 화면 호출
-            gameOverManager.ShowGameOverScreen();
-            Destroy(gameObject); // 플레이어 오브젝트 삭제
+            if (gameOverManager == null)
+            {
+                FindGameOverManager(); // gameOverManager가 없으면 다시 찾기
+            }
+
+            if (gameOverManager != null)
+            {
+                gameOverManager.ShowGameOverScreen();
+                Destroy(gameObject); // 플레이어 오브젝트 삭제
+            }
+            else
+            {
+                Debug.LogError("Gameover manager could not be found for game over handling.");
+            }
         }
         else
         {
@@ -426,18 +434,39 @@ public class PlayerController : MonoBehaviour
     // 씬 로드 완료 후 호출되는 메서드
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // 모든 씬에서 스폰 포인트를 찾음
-        GameObject spawnPoint = GameObject.FindWithTag("SpawnPoint");
+        if (PlayerState.instance != null && PlayerState.instance.inventory != null)
+        {
+            for (int i = 0; i < PlayerState.instance.inventory.Count; i++)
+            {
+                if (PlayerState.instance.inventory[i] == null || string.IsNullOrEmpty(PlayerState.instance.inventory[i]?.itemName))
+                {
+                    PlayerState.instance.inventory[i] = null;  // 빈 슬롯은 null로 강제 유지
+                }
+            }
+        }
 
+        FindGameOverManager(); // 새로운 씬에서 Gameover 매니저 찾기
+        PlayerState.instance?.SelectClosestSlot();
+
+        GameObject spawnPoint = GameObject.FindWithTag("SpawnPoint");
         if (spawnPoint != null)
         {
-            // 스폰 포인트가 존재하면 플레이어를 해당 위치로 이동
             transform.position = spawnPoint.transform.position;
             Debug.Log($"스폰 포인트로 이동: {scene.name}");
         }
         else
         {
             Debug.LogWarning($"스폰 포인트를 찾을 수 없음 씬: {scene.name}");
+        }
+    }
+
+    private void FindGameOverManager()
+    {
+        gameOverManager = FindObjectOfType<Gameover>();
+
+        if (gameOverManager == null)
+        {
+            Debug.LogError("Gameover manager not found in the current scene.");
         }
     }
 }

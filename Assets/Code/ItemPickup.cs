@@ -22,32 +22,28 @@ public class ItemPickup : MonoBehaviour
 
     private void Update()
     {
-        // 플레이어 Transform을 찾지 못한 경우 더 이상 처리하지 않음
         if (playerTransform == null)
         {
             GameObject playerObject = GameObject.FindWithTag("Player");
             if (playerObject != null)
             {
                 playerTransform = playerObject.transform;
-                Debug.Log("Player Transform found and assigned in Update.");
+                PlayerState.instance = playerObject.GetComponent<PlayerState>(); // PlayerState 참조 보장
+                Debug.Log("Player Transform과 PlayerState가 할당되었습니다.");
             }
             else
             {
-                // 플레이어가 아직 스폰되지 않았을 경우 처리하지 않음
                 return;
             }
         }
 
-        // 플레이어와 아이템 사이의 거리를 계산
         float distanceToPlayer = Vector3.Distance(playerTransform.position, transform.position);
-
-        // 플레이어가 일정 범위 내에 있고, 상단 방향키가 눌렸을 때 아이템을 인벤토리에 추가
         if (distanceToPlayer <= pickupRange && Input.GetKeyDown(KeyCode.UpArrow))
         {
             if (PlayerState.instance.AddItemToInventory(item))
             {
                 Debug.Log($"{item.itemName} 아이템 인벤토리에 추가");
-                Destroy(gameObject);  // 아이템 오브젝트 제거
+                Destroy(gameObject);
             }
         }
     }

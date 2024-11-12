@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerState : MonoBehaviour
 {
@@ -25,45 +26,40 @@ public class PlayerState : MonoBehaviour
     public int maxHealth = 50;               // 최대 체력
     public int currentHealth = 50;           // 현재 체력
 
-
     [Header("이동 능력치 설정")]
     public float moveSpeed = 5.0f;            // 이동 속도
     public float decelerationRate = 10.0f;    // 감속 속도
     public float jumpPower = 15.0f;           // 점프 힘 (중력5일 때)
 
     [Header("인벤토리 설정")]
-    public int potionCount = 3;             // 회복약 소지 개수
-    public int maxPotionCount = 3;             // 회복약 최대 소지 개수
-    public int healAmount = 20;              // 회복약 1개의 체력 회복량
+    public int potionCount = 3;               // 회복약 소지 개수
+    public int maxPotionCount = 3;            // 회복약 최대 소지 개수
+    public int healAmount = 20;               // 회복약 1개의 체력 회복량
     public List<Item> inventory = new List<Item>(); // 인벤토리 리스트
-    private int selectedSlot = -1;  // 현재 선택된 슬롯 번호 (-1이면 선택되지 않은 상태)
-    public int inventorySlot = 5;           // 인벤토리 칸 개수
-    public int maxInventorySlot = 5; // 인벤토리 최대 슬롯
-    public int skillSlot = 5;               // 스킬 칸 개수
-    public int money;                       // 돈
-    public int skillPoint;                  // 스킬 포인트
+    private int selectedSlot = -1;            // 현재 선택된 슬롯 번호 (-1이면 선택되지 않은 상태)
+    public int inventorySlot = 5;             // 인벤토리 칸 개수
+    public int maxInventorySlot = 5;          // 인벤토리 최대 슬롯
+    public int skillSlot = 5;                 // 스킬 칸 개수
+    public int money;                         // 돈
+    public int skillPoint;                    // 스킬 포인트
 
     private void Awake()
     {
-        // Singleton 적용: 씬이 전환될 때 이 인스턴스를 유지하고, 중복된 인스턴스 제거
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); // 이 오브젝트는 씬이 전환되어도 파괴되지 않음
+            DontDestroyOnLoad(gameObject); // 싱글톤 유지
         }
         else if (instance != this)
         {
-            Destroy(gameObject); // 이미 존재하는 인스턴스가 있으면 새로 생성된 것은 삭제
+            Destroy(gameObject); // 이미 존재하는 인스턴스가 있으면 삭제
         }
     }
 
     private void Start()
     {
-        // 인벤토리 리스트를 고정된 슬롯 수에 맞게 초기화 (빈 슬롯은 null)
-        for (int i = 0; i < inventorySlot; i++)
-        {
-            inventory.Add(null);  // 빈 슬롯을 null로 채움
-        }
+        // 인벤토리 리스트를 고정된 슬롯 수에 맞게 초기화 (빈 슬롯은 null로 유지)
+        inventory = new List<Item>(new Item[inventorySlot]);
 
         // 선택된 아이템 UI 초기화
         UpdateSelectedItemUI();
@@ -71,55 +67,62 @@ public class PlayerState : MonoBehaviour
 
     private void Update()
     {
-        // W 버튼을 눌렀을 때 선택된 슬롯 전환
         if (Input.GetKeyDown(KeyCode.W))
         {
             ChangeSelectedSlot();
         }
 
-        // Q 버튼을 눌렀을 때 선택된 슬롯의 아이템 삭제
         if (Input.GetKeyDown(KeyCode.Q))
         {
             RemoveSelectedItem();
         }
     }
 
-    // W 버튼으로 슬롯 전환 기능 (빈 슬롯은 건너뜀)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // 슬롯 초기화 방지 및 선택된 슬롯 업데이트
+        SelectClosestSlot();
+    }
+
+    // **W 버튼으로 슬롯 전환 기능 (빈 슬롯은 건너뜀)**
     private void ChangeSelectedSlot()
     {
-        // 인벤토리가 비어 있으면 슬롯을 전환하지 않음
-        if (inventory.Count == 0)
+        if (inventory.TrueForAll(slot => slot == null))
         {
             Debug.LogWarning("Inventory is empty. No slot to select.");
+            selectedSlot = -1;
+            selectedItemImage.enabled = false;
             return;
         }
 
         int startSlot = selectedSlot;
         bool validSlotFound = false;
 
-        // 빈 슬롯을 건너뛰고 유효한 슬롯을 찾는 루프
         do
         {
-            selectedSlot = (selectedSlot + 1) % inventorySlot;  // 슬롯을 순환
+            selectedSlot = (selectedSlot + 1) % inventorySlot;
 
-            // 유효한 슬롯을 찾으면 종료
+            if (selectedSlot < inventory.Count)
+            {
+                Item currentItem = inventory[selectedSlot];
+                Debug.Log($"W key pressed: Slot {selectedSlot}, Item: {(currentItem != null ? currentItem.itemName : "Empty")}");
+            }
+
             if (selectedSlot < inventory.Count && inventory[selectedSlot] != null)
             {
                 validSlotFound = true;
                 break;
             }
         }
-        while (selectedSlot != startSlot);  // 다시 처음 선택한 슬롯으로 돌아오면 루프 종료
+        while (selectedSlot != startSlot);
 
         if (validSlotFound)
         {
-            Debug.Log($"Selected Slot: {selectedSlot + 1}");
             UpdateSelectedItemUI();
         }
         else
         {
-            // 유효한 슬롯을 찾지 못했을 때
-            Debug.LogWarning("No valid item found in the inventory slots.");
+            selectedSlot = -1;
             selectedItemImage.enabled = false;
         }
     }
@@ -130,14 +133,11 @@ public class PlayerState : MonoBehaviour
         if (selectedSlot >= 0 && selectedSlot < inventorySlot && inventory[selectedSlot] != null)
         {
             Item itemToRemove = inventory[selectedSlot];
-
             RemoveItemEffect(itemToRemove);
-
-            inventory[selectedSlot] = null;  // 슬롯에서 아이템 삭제
+            inventory[selectedSlot] = null;
             Debug.Log($"{itemToRemove.itemName} 아이템이 삭제되었습니다.");
 
-            // 가장 가까운 아이템이 있는 슬롯으로 자동 선택
-            SelectClosestSlot();
+            SelectClosestSlot(); // 빈 슬롯이 선택되지 않도록 가장 가까운 아이템 있는 슬롯으로 자동 선택
         }
         else
         {
@@ -145,10 +145,25 @@ public class PlayerState : MonoBehaviour
         }
     }
 
-    // 선택된 아이템을 UI에 업데이트하는 함수
+    // **선택된 아이템을 UI에 업데이트하는 함수**
     private void UpdateSelectedItemUI()
     {
-        // 현재 선택된 슬롯의 아이템이 있으면
+        // selectedItemImage가 null이거나 파괴된 경우, 태그를 통해 다시 할당
+        if (selectedItemImage == null)
+        {
+            GameObject imageObject = GameObject.FindWithTag("SelectedItemImage");
+            if (imageObject != null)
+            {
+                selectedItemImage = imageObject.GetComponent<Image>();
+            }
+            else
+            {
+                Debug.LogWarning("SelectedItemImage with the specified tag not found.");
+                return; // UI 오브젝트가 없으면 더 이상 진행하지 않음
+            }
+        }
+
+        // **현재 선택된 슬롯이 유효한지 확인**
         if (selectedSlot >= 0 && selectedSlot < inventory.Count && inventory[selectedSlot] != null)
         {
             Item selectedItem = inventory[selectedSlot];
@@ -165,18 +180,16 @@ public class PlayerState : MonoBehaviour
     // 인벤토리에 아이템 추가 메서드
     public bool AddItemToInventory(Item newItem)
     {
-        // 빈 슬롯을 찾아서 아이템을 추가
         for (int i = 0; i < inventorySlot; i++)
         {
-            if (inventory[i] == null)  // 빈 슬롯 발견
+            if (inventory[i] == null)
             {
                 inventory[i] = newItem;
                 Debug.Log($"{newItem.itemName} 아이템이 인벤토리 {i + 1}번째 슬롯에 추가되었습니다.");
 
                 ApplyItemEffect(newItem);
 
-                // 인벤토리가 비어있을 때 자동 선택
-                if (selectedSlot == -1)
+                if (selectedSlot == -1)  // 선택된 슬롯이 없다면 추가한 슬롯을 선택
                 {
                     selectedSlot = i;
                     UpdateSelectedItemUI();
@@ -191,59 +204,40 @@ public class PlayerState : MonoBehaviour
     }
 
     // 가장 가까운 아이템이 있는 슬롯으로 선택
-    private void SelectClosestSlot()
+    public void SelectClosestSlot()
     {
-        if (inventorySlot == 0)
+        // 인벤토리가 비어있는 경우 선택된 슬롯을 해제하고 UI를 업데이트
+        if (inventory.TrueForAll(slot => slot == null))
         {
-            selectedSlot = -1;  // 인벤토리가 비었을 때는 선택된 슬롯을 해제
+            selectedSlot = -1;
             UpdateSelectedItemUI();
             return;
         }
 
-        // 현재 슬롯부터 시작해서 가까운 슬롯을 찾음
         int startSlot = selectedSlot;
         bool validSlotFound = false;
 
         do
         {
-            // 슬롯을 순환하면서 아이템이 있는 슬롯을 찾음
+            // 다음 슬롯으로 이동하면서 유효한 슬롯인지 확인
             selectedSlot = (selectedSlot + 1) % inventorySlot;
 
-            // 유효한 슬롯을 찾았는지 확인
             if (selectedSlot < inventory.Count && inventory[selectedSlot] != null)
             {
                 validSlotFound = true;
                 break;
             }
         }
-        while (selectedSlot != startSlot);  // 다시 처음 선택한 슬롯으로 돌아오면 루프 종료
+        while (selectedSlot != startSlot);  // 다시 처음 슬롯으로 돌아오면 종료
 
         if (validSlotFound)
         {
-            Debug.Log($"Closest item found in slot {selectedSlot + 1}.");
             UpdateSelectedItemUI();
         }
         else
         {
-            Debug.LogWarning("No valid item found in the inventory slots.");
-            selectedItemImage.enabled = false;  // 유효한 아이템이 없으면 이미지 비활성화
-        }
-    }
-
-    // 인벤토리에서 아이템 제거 메서드
-    public bool RemoveItemFromInventory(Item itemToRemove)
-    {
-        if (inventory.Contains(itemToRemove))
-        {
-            RemoveItemEffect(itemToRemove); // 아이템 효과 제거
-            inventory.Remove(itemToRemove);
-            Debug.Log($"{itemToRemove.itemName} 아이템 인벤토리에서 제거.");
-            return true;
-        }
-        else
-        {
-            Debug.LogWarning("아이템을 인벤토리에서 찾을 수 없습니다.");
-            return false;
+            selectedSlot = -1;  // 유효한 슬롯이 없을 때 선택 해제
+            selectedItemImage.enabled = false;
         }
     }
 

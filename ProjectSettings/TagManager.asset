@@ -9,6 +9,8 @@ TagManager:
   - PlatformCanDown
   - Portal
   - SpawnPoint
+  - SelectedItemImage
+  - ReButton
   layers:
   - Default
   - TransparentFX
