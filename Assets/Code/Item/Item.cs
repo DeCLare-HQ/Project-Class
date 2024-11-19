@@ -16,12 +16,16 @@ public class Item
     public ItemType itemType;    // 아이템 종류
     public float effectAmount;   // 아이템 효과 수치
     public Sprite itemSprite;    // 아이템 이미지
+    public int itemPrice;        // 아이템 가격
+    public string itemDescription; // 아이템 설명
 
-    public Item(string name, ItemType type, float effect, Sprite sprite)
+    public Item(string name, ItemType type, float effect, Sprite sprite, int price, string description)
     {
         itemName = name;
         itemType = type;
         effectAmount = effect;
         itemSprite = sprite;
+        this.itemPrice = price;
+        itemDescription = description;
     }
 }

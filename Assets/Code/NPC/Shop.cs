@@ -8,13 +8,14 @@ public class Shop : MonoBehaviour
 
     public GameObject shopUI; // 상점 UI 오브젝트
     public Image[] slotImages; // 상점 슬롯의 이미지 배열
-    public TMP_Text[] slotTexts; // 상점 슬롯의 텍스트 배열
+    public TMP_Text[] slotNameTexts; // 상점 슬롯의 아이템 이름 텍스트 배열
+    public TMP_Text[] slotPriceTexts; // 상점 슬롯의 아이템 가격 텍스트 배열
     public Button[] buyButtons; // 구매 버튼 배열
 
     private Item[] shopItems; // 상점에 표시될 아이템 배열
     private bool isPlayerInRange; // 플레이어가 상점 범위에 있는지 여부
     private PlayerController player; // 플레이어 컨트롤러 참조
-
+    private Inventory inventory; // 인벤토리 참조
     public ItemManager itemManager; // 아이템 매니저 참조 (아이템 데이터 생성)
 
     private void Awake()
@@ -39,13 +40,13 @@ public class Shop : MonoBehaviour
 
     void Update()
     {
-        // 상점 닫기
+        // 상점 닫기: Tab 키
         if (shopUI.activeSelf && Input.GetKeyDown(KeyCode.Tab))
         {
             ToggleShopUI(false);
         }
 
-        // 상점 열기
+        // 상점 열기: 상단 숫자 키
         if (isPlayerInRange && !shopUI.activeSelf && !Inventory.instance.inventoryUI.activeSelf)
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -93,7 +94,6 @@ public class Shop : MonoBehaviour
     {
         var items = new Item[]
         {
-            itemManager.money1, itemManager.money5, itemManager.money10,
             itemManager.testMelee, itemManager.testMagic,
             itemManager.testHealth, itemManager.testDefense
         };
@@ -113,7 +113,8 @@ public class Shop : MonoBehaviour
             {
                 slotImages[i].sprite = shopItems[i].itemSprite;
                 slotImages[i].color = Color.white; // 아이템이 있는 경우 투명도 제거
-                slotTexts[i].text = shopItems[i].itemName;
+                slotNameTexts[i].text = shopItems[i].itemName; // 아이템 이름 표시
+                slotPriceTexts[i].text = $"{shopItems[i].itemPrice} Gold"; // 아이템 가격 표시
                 buyButtons[i].interactable = true; // 구매 버튼 활성화
                 int index = i; // 버튼에 현재 슬롯 인덱스를 전달
                 buyButtons[i].onClick.RemoveAllListeners(); // 기존 리스너 제거
@@ -121,9 +122,11 @@ public class Shop : MonoBehaviour
             }
             else
             {
+                // 구매된 슬롯 비우기
                 slotImages[i].sprite = null;
                 slotImages[i].color = new Color(1, 1, 1, 0); // 빈 슬롯 투명
-                slotTexts[i].text = "";
+                slotNameTexts[i].text = ""; // 아이템 이름 제거
+                slotPriceTexts[i].text = ""; // 아이템 가격 제거
                 buyButtons[i].interactable = false; // 버튼 비활성화
             }
         }
@@ -135,17 +138,26 @@ public class Shop : MonoBehaviour
         var selectedItem = shopItems[slotIndex];
         if (selectedItem != null)
         {
-            if (PlayerState.instance.money >= selectedItem.effectAmount)
+            if (PlayerState.instance.money >= selectedItem.itemPrice)
             {
                 PlayerState.instance.AddItemToInventory(selectedItem);
-                PlayerState.instance.money -= (int)selectedItem.effectAmount;
+                PlayerState.instance.money -= selectedItem.itemPrice;
+                Inventory.instance.UpdateMoneyUI();
                 Debug.Log($"{selectedItem.itemName} 구매 완료!");
+
+                // 구매 후 해당 슬롯 비우기
+                shopItems[slotIndex] = null;
+
                 UpdateShopUI(); // UI 갱신
             }
             else
             {
                 Debug.Log("돈이 부족합니다!");
             }
+        }
+        else
+        {
+            Debug.LogWarning("이미 구매된 아이템입니다.");
         }
     }
 }

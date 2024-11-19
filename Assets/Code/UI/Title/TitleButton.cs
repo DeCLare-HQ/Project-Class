@@ -26,5 +26,16 @@ public class TitleButton : MonoBehaviour
     {
         SceneManager.LoadScene("SampleScene");
     }
+
+    public void ExitButton()
+    {
+    #if UNITY_EDITOR
+        // 에디터에서 종료를 에뮬레이션
+        UnityEditor.EditorApplication.isPlaying = false;
+    #else
+        // 빌드된 게임 종료
+        Application.Quit();
+    #endif
+    }
 }
 

@@ -10,7 +10,6 @@ public class PlayerState : MonoBehaviour
 
     [Header("UI 설정")]
     public Image selectedItemImage;  // 선택된 아이템을 표시할 UI 이미지
-    public TMP_Text moneyText; // 소지금 UI 표시
     private bool isRetry; // 리트라이 여부를 확인하는 플래그
 
     [Header("근접 공격 능력치 설정")]
@@ -65,24 +64,6 @@ public class PlayerState : MonoBehaviour
     {
         // 인벤토리 리스트를 고정된 슬롯 수에 맞게 초기화 (빈 슬롯은 null로 유지)
         inventory = new List<Item>(new Item[inventorySlot]);
-
-        UpdateSelectedItemUI();
-        FindMoneyText();
-        UpdateMoneyUI();
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            ChangeSelectedSlot();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            RemoveSelectedItem();
-        }
     }
 
     private void OnApplicationQuit()
@@ -93,7 +74,6 @@ public class PlayerState : MonoBehaviour
     private void OnDestroy()
     {
         SaveMoney(); // 씬 이동 시 money 저장
-        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     // money 값을 PlayerPrefs에 저장
@@ -118,158 +98,6 @@ public class PlayerState : MonoBehaviour
         Debug.Log($"Money loaded: {money}");
     }
 
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        FindMoneyText();  // moneyText를 새 씬에서 다시 참조
-        UpdateMoneyUI();  // money 값을 UI와 동기화
-        SelectClosestSlot();  // 인벤토리 슬롯 갱신
-        
-        // Lobby 씬의 UI 동기화 강제
-        if (scene.name == "Lobby")
-        {
-            FindMoneyText();
-            UpdateMoneyUI();
-            Debug.Log("Lobby scene loaded. PlayerState synced.");
-        }
-    }
-
-    public void InitializeAfterSpawn(GameObject player)
-    {
-        FindMoneyText();  // UI 텍스트를 다시 참조
-        UpdateMoneyUI();  // UI와 상태를 동기화
-        Debug.Log($"Player initialized after spawn with money: {money}");
-    }
-
-    // **W 버튼으로 슬롯 전환 기능 (빈 슬롯은 건너뜀)**
-    private void ChangeSelectedSlot()
-    {
-        if (inventory.TrueForAll(slot => slot == null))
-        {
-            Debug.LogWarning("Inventory is empty. No slot to select.");
-            selectedSlot = -1;
-            selectedItemImage.enabled = false;
-            return;
-        }
-
-        int startSlot = selectedSlot;
-        bool validSlotFound = false;
-
-        do
-        {
-            selectedSlot = (selectedSlot + 1) % inventorySlot;
-
-            if (selectedSlot < inventory.Count)
-            {
-                Item currentItem = inventory[selectedSlot];
-                Debug.Log($"W key pressed: Slot {selectedSlot}, Item: {(currentItem != null ? currentItem.itemName : "Empty")}");
-            }
-
-            if (selectedSlot < inventory.Count && inventory[selectedSlot] != null)
-            {
-                validSlotFound = true;
-                break;
-            }
-        }
-        while (selectedSlot != startSlot);
-
-        if (validSlotFound)
-        {
-            UpdateSelectedItemUI();
-        }
-        else
-        {
-            selectedSlot = -1;
-            selectedItemImage.enabled = false;
-        }
-    }
-
-    // Q 버튼으로 선택된 슬롯의 아이템 삭제 기능
-    private void RemoveSelectedItem()
-    {
-        if (selectedSlot >= 0 && selectedSlot < inventorySlot && inventory[selectedSlot] != null)
-        {
-            Item itemToRemove = inventory[selectedSlot];
-            RemoveItemEffect(itemToRemove);
-            inventory[selectedSlot] = null;
-            Debug.Log($"{itemToRemove.itemName} 아이템이 삭제되었습니다.");
-
-            SelectClosestSlot(); // 빈 슬롯이 선택되지 않도록 가장 가까운 아이템 있는 슬롯으로 자동 선택
-        }
-        else
-        {
-            Debug.LogWarning("선택된 슬롯에 아이템이 없습니다.");
-        }
-    }
-
-    // **선택된 아이템을 UI에 업데이트하는 함수**
-    private void UpdateSelectedItemUI()
-    {
-        // selectedItemImage가 null이거나 파괴된 경우, 태그를 통해 다시 할당
-        if (selectedItemImage == null)
-        {
-            GameObject imageObject = GameObject.FindWithTag("SelectedItemImage");
-            if (imageObject != null)
-            {
-                selectedItemImage = imageObject.GetComponent<Image>();
-            }
-            else
-            {
-                Debug.LogWarning("SelectedItemImage with the specified tag not found.");
-                return; // UI 오브젝트가 없으면 더 이상 진행하지 않음
-            }
-        }
-
-        // **현재 선택된 슬롯이 유효한지 확인**
-        if (selectedSlot >= 0 && selectedSlot < inventory.Count && inventory[selectedSlot] != null)
-        {
-            Item selectedItem = inventory[selectedSlot];
-            selectedItemImage.sprite = selectedItem.itemSprite;
-            selectedItemImage.enabled = true;  // 이미지 활성화
-        }
-        else
-        {
-            // 선택된 슬롯에 아이템이 없으면 이미지를 비활성화
-            selectedItemImage.enabled = false;
-        }
-    }
-
-    // MoneyText UI 텍스트를 자동으로 찾는 메서드
-    private void FindMoneyText()
-    {
-        GameObject moneyTextObject = GameObject.Find("MoneyText"); // "MoneyText" 이름의 오브젝트 검색
-        if (moneyTextObject != null)
-        {
-            moneyText = moneyTextObject.GetComponent<TMP_Text>(); // UI 텍스트 컴포넌트 연결
-        }
-    }
-
-    // 돈 값이 변할 때마다 UI를 갱신하는 메서드
-    public void UpdateMoneyUI()
-    {
-        if (moneyText != null)
-        {
-            moneyText.text = "Money: " + money.ToString();
-        }
-        else
-        {
-            FindMoneyText(); // UI 참조가 누락된 경우 다시 검색
-
-            if (moneyText != null)
-            {
-                moneyText.text = "Money: " + money.ToString();
-            }
-        }
-        // 현재 money 값을 PlayerPrefs에 저장
-        PlayerPrefs.SetInt("PlayerMoney", money);
-    }
-
-    // 돈을 증가시킬 때 UI 갱신
-    public void AddMoney(int amount)
-    {
-        money += amount;
-        UpdateMoneyUI();  // 돈 값이 변할 때마다 UI를 업데이트
-    }
-
     // 인벤토리에 아이템 추가 메서드
     public bool AddItemToInventory(Item newItem)
     {
@@ -277,7 +105,6 @@ public class PlayerState : MonoBehaviour
         {
             // 돈 아이템일 경우 인벤토리에 추가하지 않고 money 값만 증가
             money += (int)newItem.effectAmount;
-            UpdateMoneyUI(); // UI에 소지 금액 갱신
             return true;
         }
 
@@ -294,7 +121,6 @@ public class PlayerState : MonoBehaviour
                 if (selectedSlot == -1)  // 선택된 슬롯이 없다면 추가한 슬롯을 선택
                 {
                     selectedSlot = i;
-                    UpdateSelectedItemUI();
                 }
 
                 return true;
@@ -322,46 +148,7 @@ public class PlayerState : MonoBehaviour
         money = 0; // 돈 초기화
         PlayerPrefs.SetInt("PlayerMoney", money); // PlayerPrefs에 초기화 값 저장
         PlayerPrefs.Save(); // 값 저장 보장
-        UpdateMoneyUI(); // UI 업데이트
         Debug.Log("New game started. Money reset to 0.");
-    }
-
-    // 가장 가까운 아이템이 있는 슬롯으로 선택
-    public void SelectClosestSlot()
-    {
-        // 인벤토리가 비어있는 경우 선택된 슬롯을 해제하고 UI를 업데이트
-        if (inventory.TrueForAll(slot => slot == null))
-        {
-            selectedSlot = -1;
-            UpdateSelectedItemUI();
-            return;
-        }
-
-        int startSlot = selectedSlot;
-        bool validSlotFound = false;
-
-        do
-        {
-            // 다음 슬롯으로 이동하면서 유효한 슬롯인지 확인
-            selectedSlot = (selectedSlot + 1) % inventorySlot;
-
-            if (selectedSlot < inventory.Count && inventory[selectedSlot] != null)
-            {
-                validSlotFound = true;
-                break;
-            }
-        }
-        while (selectedSlot != startSlot);  // 다시 처음 슬롯으로 돌아오면 종료
-
-        if (validSlotFound)
-        {
-            UpdateSelectedItemUI();
-        }
-        else
-        {
-            selectedSlot = -1;  // 유효한 슬롯이 없을 때 선택 해제
-            selectedItemImage.enabled = false;
-        }
     }
 
     // 아이템 효과 적용 메서드

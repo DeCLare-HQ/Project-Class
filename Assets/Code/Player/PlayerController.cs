@@ -107,7 +107,28 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            Inventory.instance?.ToggleInventory(); // Inventory 싱글톤 호출로 UI 토글
+            Inventory.instance?.ToggleInventory(); // 인벤토리 토글
+        }
+
+        if (Inventory.instance != null && Inventory.instance.inventoryUI.activeSelf)
+        {
+            // 이전 슬롯 선택
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                Inventory.instance.SelectPreviousSlot();
+            }
+
+            // 다음 슬롯 선택
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                Inventory.instance.SelectNextSlot();
+            }
+
+            // E 키로 아이템 삭제
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                Inventory.instance.RemoveSelectedItem();
+            }
         }
 
         // 좌우 이동
@@ -451,7 +472,6 @@ public class PlayerController : MonoBehaviour
         }
 
         FindGameOverManager(); // 새로운 씬에서 Gameover 매니저 찾기
-        PlayerState.instance?.SelectClosestSlot();
 
         GameObject spawnPoint = GameObject.FindWithTag("SpawnPoint");
         if (spawnPoint != null)
