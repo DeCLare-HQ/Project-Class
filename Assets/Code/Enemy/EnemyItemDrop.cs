@@ -18,7 +18,7 @@ public class EnemyItemDrop : MonoBehaviour
     [Header("적의 종류 설정")]
     public EnemyType enemyType; // 적의 종류
 
-    private float dropChance; // 드롭 확률
+    private float dropChance; // 아이템 드롭 확률
 
     private void Start()
     {
@@ -44,7 +44,6 @@ public class EnemyItemDrop : MonoBehaviour
                 dropChance = 1f; // 기본값
                 break;
         }
-
         Debug.Log($"Enemy Type: {enemyType}, Drop Chance: {dropChance * 100}%");
     }
 
@@ -54,48 +53,64 @@ public class EnemyItemDrop : MonoBehaviour
         if (playerObject != null)
         {
             playerTransform = playerObject.transform;
-            Debug.Log("Player Transform found and assigned.");
-        }
-        else
-        {
-            Debug.LogWarning("Player object not found for EnemyItemDrop.");
         }
     }
 
-    // 아이템 드롭 처리 메서드 (적이 죽을 때 호출)
+    // 적이 죽을 때 호출
     public void HandleEnemyDeath()
     {
-        // 드롭 확률에 따라 아이템 드롭 결정
+        // 일반 아이템 드롭 확률에 따라 랜덤 드롭
         if (Random.value <= dropChance)
         {
             DropRandomItem();
         }
+
+        // 돈 아이템은 무조건 드롭
+        DropMoneyItem();
     }
 
     // 랜덤한 아이템을 드롭하는 메서드
     private void DropRandomItem()
     {
-        // ItemManager에서 랜덤 아이템 선택
+        // Money 타입을 제외한 아이템 선택
         Item[] items = { itemManager.testMelee, itemManager.testMagic, itemManager.testHealth, itemManager.testDefense };
         Item randomItem = items[Random.Range(0, items.Length)];
 
-        // 기본 드롭 위치는 적의 위치에서 약간 위
-        Vector3 dropPosition = transform.position + new Vector3(0, 2.0f, 0);
+        Vector3 dropPosition = GetDropPosition();
+        ItemUtility.SpawnItem(randomItem, dropPosition, itemLayer, itemPhysicsMaterial);
+    }
 
-        // 플레이어와의 거리 확인
-        if (playerTransform != null)
+    // 돈 아이템 드롭 (확률에 따라 1원, 5원, 10원)
+    private void DropMoneyItem()
+    {
+        float rand = Random.value;
+        Item moneyItem;
+
+        if (rand < 0.5f)
         {
-            float distanceToPlayer = Vector3.Distance(playerTransform.position, dropPosition);
-
-            // 플레이어와의 거리가 pickupRange 이상이면 플레이어 근처에 드롭
-            if (distanceToPlayer > pickupRange)
-            {
-                dropPosition = playerTransform.position + new Vector3(1.5f, 0, 0); // 플레이어 근처에 드롭
-                Debug.Log("Item drop position adjusted closer to the player.");
-            }
+            moneyItem = itemManager.money1; // 1원 (50% 확률)
+        }
+        else if (rand < 0.85f)
+        {
+            moneyItem = itemManager.money5; // 5원 (35% 확률)
+        }
+        else
+        {
+            moneyItem = itemManager.money10; // 10원 (15% 확률)
         }
 
-        // 아이템 유틸리티를 사용하여 아이템 소환
-        ItemUtility.SpawnItem(randomItem, dropPosition, itemLayer, itemPhysicsMaterial);
+        Vector3 dropPosition = GetDropPosition();
+        ItemUtility.SpawnItem(moneyItem, dropPosition, itemLayer, itemPhysicsMaterial);
+    }
+
+    // 드롭 위치 설정 메서드
+    private Vector3 GetDropPosition()
+    {
+        Vector3 dropPosition = transform.position + new Vector3(0, 2.0f, 0);
+        if (playerTransform != null && Vector3.Distance(playerTransform.position, dropPosition) > pickupRange)
+        {
+            dropPosition = playerTransform.position + new Vector3(1.5f, 0, 0);
+        }
+        return dropPosition;
     }
 }

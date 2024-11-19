@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PlayerState : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class PlayerState : MonoBehaviour
 
     [Header("UI 설정")]
     public Image selectedItemImage;  // 선택된 아이템을 표시할 UI 이미지
+    public TMP_Text moneyText; // 소지금 UI 표시
+    private bool isRetry; // 리트라이 여부를 확인하는 플래그
 
     [Header("근접 공격 능력치 설정")]
     public float physicalAttackPower = 10.0f; // 물리 공격력
@@ -49,10 +52,12 @@ public class PlayerState : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject); // 싱글톤 유지
+            isRetry = PlayerPrefs.GetInt("IsRetry", 0) == 1; // IsRetry 값을 로드
+            LoadMoney(); // 게임 시작 시 money 값 불러오기
         }
         else if (instance != this)
         {
-            Destroy(gameObject); // 이미 존재하는 인스턴스가 있으면 삭제
+            Destroy(gameObject); // 중복 인스턴스 방지
         }
     }
 
@@ -61,8 +66,10 @@ public class PlayerState : MonoBehaviour
         // 인벤토리 리스트를 고정된 슬롯 수에 맞게 초기화 (빈 슬롯은 null로 유지)
         inventory = new List<Item>(new Item[inventorySlot]);
 
-        // 선택된 아이템 UI 초기화
         UpdateSelectedItemUI();
+        FindMoneyText();
+        UpdateMoneyUI();
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     private void Update()
@@ -78,10 +85,59 @@ public class PlayerState : MonoBehaviour
         }
     }
 
+    private void OnApplicationQuit()
+    {
+        SaveMoney(); // 게임 종료 시 money 값 저장
+    }
+
+    private void OnDestroy()
+    {
+        SaveMoney(); // 씬 이동 시 money 저장
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // money 값을 PlayerPrefs에 저장
+    public void SaveMoney()
+    {
+        PlayerPrefs.SetInt("PlayerMoney", money);
+        PlayerPrefs.Save(); // 값 저장
+        Debug.Log($"Money saved: {money}");
+    }
+
+    // money 값을 PlayerPrefs에서 불러오기
+    private void LoadMoney()
+    {
+        if (isRetry)
+        {
+            money = PlayerPrefs.GetInt("PlayerMoney", 0); // 리트라이 시 저장된 돈 불러오기
+        }
+        else
+        {
+            money = 0; // 새 게임 시작 시 돈 초기화
+        }
+        Debug.Log($"Money loaded: {money}");
+    }
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // 슬롯 초기화 방지 및 선택된 슬롯 업데이트
-        SelectClosestSlot();
+        FindMoneyText();  // moneyText를 새 씬에서 다시 참조
+        UpdateMoneyUI();  // money 값을 UI와 동기화
+        SelectClosestSlot();  // 인벤토리 슬롯 갱신
+        
+        // Lobby 씬의 UI 동기화 강제
+        if (scene.name == "Lobby")
+        {
+            FindMoneyText();
+            UpdateMoneyUI();
+            Debug.Log("Lobby scene loaded. PlayerState synced.");
+        }
+    }
+
+    public void InitializeAfterSpawn(GameObject player)
+    {
+        FindMoneyText();  // UI 텍스트를 다시 참조
+        UpdateMoneyUI();  // UI와 상태를 동기화
+        Debug.Log($"Player initialized after spawn with money: {money}");
     }
 
     // **W 버튼으로 슬롯 전환 기능 (빈 슬롯은 건너뜀)**
@@ -177,9 +233,55 @@ public class PlayerState : MonoBehaviour
         }
     }
 
+    // MoneyText UI 텍스트를 자동으로 찾는 메서드
+    private void FindMoneyText()
+    {
+        GameObject moneyTextObject = GameObject.Find("MoneyText"); // "MoneyText" 이름의 오브젝트 검색
+        if (moneyTextObject != null)
+        {
+            moneyText = moneyTextObject.GetComponent<TMP_Text>(); // UI 텍스트 컴포넌트 연결
+        }
+    }
+
+    // 돈 값이 변할 때마다 UI를 갱신하는 메서드
+    public void UpdateMoneyUI()
+    {
+        if (moneyText != null)
+        {
+            moneyText.text = "Money: " + money.ToString();
+        }
+        else
+        {
+            FindMoneyText(); // UI 참조가 누락된 경우 다시 검색
+
+            if (moneyText != null)
+            {
+                moneyText.text = "Money: " + money.ToString();
+            }
+        }
+        // 현재 money 값을 PlayerPrefs에 저장
+        PlayerPrefs.SetInt("PlayerMoney", money);
+    }
+
+    // 돈을 증가시킬 때 UI 갱신
+    public void AddMoney(int amount)
+    {
+        money += amount;
+        UpdateMoneyUI();  // 돈 값이 변할 때마다 UI를 업데이트
+    }
+
     // 인벤토리에 아이템 추가 메서드
     public bool AddItemToInventory(Item newItem)
     {
+        if (newItem.itemType == ItemType.Money)
+        {
+            // 돈 아이템일 경우 인벤토리에 추가하지 않고 money 값만 증가
+            money += (int)newItem.effectAmount;
+            UpdateMoneyUI(); // UI에 소지 금액 갱신
+            return true;
+        }
+
+        // 일반 아이템일 경우 인벤토리에 추가
         for (int i = 0; i < inventorySlot; i++)
         {
             if (inventory[i] == null)
@@ -201,6 +303,27 @@ public class PlayerState : MonoBehaviour
 
         Debug.LogWarning("인벤토리가 가득 찼습니다.");
         return false;
+    }
+
+    // 리트라이 시 호출할 메서드
+    public void RetryGame()
+    {
+        isRetry = true; // 리트라이 플래그 설정
+        PlayerPrefs.SetInt("IsRetry", 1); // 리트라이 상태 저장
+        SaveMoney();    // 현재 money 저장
+        Debug.Log("Retry game triggered.");
+    }
+
+    // 게임을 완전히 새로 시작할 때 호출할 메서드
+    public void StartNewGame()
+    {
+        isRetry = false; // 새 게임 시작으로 리트라이 플래그 해제
+        PlayerPrefs.SetInt("IsRetry", 0); // IsRetry 값을 0으로 설정
+        money = 0; // 돈 초기화
+        PlayerPrefs.SetInt("PlayerMoney", money); // PlayerPrefs에 초기화 값 저장
+        PlayerPrefs.Save(); // 값 저장 보장
+        UpdateMoneyUI(); // UI 업데이트
+        Debug.Log("New game started. Money reset to 0.");
     }
 
     // 가장 가까운 아이템이 있는 슬롯으로 선택
@@ -246,6 +369,10 @@ public class PlayerState : MonoBehaviour
     {
         switch (item.itemType)
         {
+            case ItemType.Money:
+                money += (int)item.effectAmount;
+                Debug.Log($"{item.itemName} applied: Money increased by {item.effectAmount}");
+                break;
             case ItemType.HealthMax:
                 maxHealth += (int)item.effectAmount;
                 currentHealth = Mathf.Min(currentHealth, maxHealth);

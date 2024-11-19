@@ -2,6 +2,7 @@ using UnityEngine;
 
 public enum ItemType
 {
+    Money,               // 돈 증가
     HealthMax,          // 최대 체력 증가
     MeleeAttackBoost,   // 물리 공격력 증가
     MagicAttackBoost,   // 마법 공격력 증가

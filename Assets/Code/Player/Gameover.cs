@@ -77,6 +77,7 @@ public class Gameover : MonoBehaviour
     // 로비로 돌아가는 버튼을 클릭했을 때 실행되는 메서드
     private void OnRetryButtonClicked()
     {
+        PlayerState.instance.RetryGame(); // 리트라이로 설정하여 돈 유지
         Time.timeScale = 1;               // 게임 속도 복구
         SceneManager.LoadScene("Lobby");  // 로비 씬 로드
     }

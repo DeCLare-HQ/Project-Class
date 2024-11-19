@@ -105,6 +105,11 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            Inventory.instance?.ToggleInventory(); // Inventory 싱글톤 호출로 UI 토글
+        }
+
         // 좌우 이동
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
