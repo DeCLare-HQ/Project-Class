@@ -33,7 +33,7 @@ public class Inventory : MonoBehaviour
         {
             inventoryUI.SetActive(false); // 시작 시 인벤토리 UI를 숨김
         }
-        
+
         if (slotHighlights != null)
         {
             foreach (var highlight in slotHighlights)
@@ -52,7 +52,7 @@ public class Inventory : MonoBehaviour
         if (inventoryUI != null)
         {
             // 상점이 열려 있으면 인벤토리를 열지 않음
-            if (ShopIsOpen()) return;
+            if (Shop.instance != null && Shop.instance.shopUI.activeSelf) return;
 
             bool isOpen = !inventoryUI.activeSelf;
             inventoryUI.SetActive(isOpen);

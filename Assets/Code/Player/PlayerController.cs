@@ -131,8 +131,18 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // 좌우 이동
-        horizontalInput = Input.GetAxisRaw("Horizontal");
+        if (Input.GetKey(KeyCode.LeftArrow))
+    {
+        horizontalInput = -1f; // 왼쪽
+    }
+    else if (Input.GetKey(KeyCode.RightArrow))
+    {
+        horizontalInput = 1f; // 오른쪽
+    }
+    else
+    {
+        horizontalInput = 0f; // 정지
+    }
 
         // 스프라이트 방향 변경
         FlipSprite();
@@ -158,7 +168,7 @@ public class PlayerController : MonoBehaviour
         // 버튼 입력시 쿨타임이 없으면 근접 공격
         if (curTime <= 0)
         {
-            if (Input.GetKeyDown(KeyCode.R))
+            if (Input.GetKeyDown(KeyCode.A))
             {
                 MeleeAttack();
             }
@@ -168,7 +178,7 @@ public class PlayerController : MonoBehaviour
             curTime -= Time.deltaTime;
         }
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.S))
         {
             Fire();
         }
@@ -177,7 +187,7 @@ public class PlayerController : MonoBehaviour
         CheckForEnemyCollision();
 
         // 회복약 사용
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.D))
         {
             UsePotion();
         }

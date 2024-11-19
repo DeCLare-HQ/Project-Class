@@ -15,7 +15,7 @@ public class Shop : MonoBehaviour
     private Item[] shopItems; // 상점에 표시될 아이템 배열
     private bool isPlayerInRange; // 플레이어가 상점 범위에 있는지 여부
     private PlayerController player; // 플레이어 컨트롤러 참조
-    private Inventory inventory; // 인벤토리 참조
+    private bool isInitialized = false; // 상점이 초기화되었는지 여부
     public ItemManager itemManager; // 아이템 매니저 참조 (아이템 데이터 생성)
 
     private void Awake()
@@ -28,34 +28,42 @@ public class Shop : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        shopItems = new Item[3]; // 상점 슬롯 초기화
     }
 
     void Start()
     {
         if (shopUI != null)
+        {
             shopUI.SetActive(false); // 초기에는 상점 UI를 비활성화
+        }
 
-        shopItems = new Item[3]; // 3개의 슬롯에 사용할 아이템 배열 초기화
+        ResetShopState(); // 씬 로드 후 상태 초기화
     }
 
     void Update()
     {
-        // 상점 닫기: Tab 키
-        if (shopUI.activeSelf && Input.GetKeyDown(KeyCode.Tab))
+        // 상점 닫기
+        if (shopUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
         {
             ToggleShopUI(false);
         }
 
-        // 상점 열기: 상단 숫자 키
+        // 상점 열기
         if (isPlayerInRange && !shopUI.activeSelf && !Inventory.instance.inventoryUI.activeSelf)
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
             {
                 ToggleShopUI(true);
-                GenerateRandomItems(); // 상점 열릴 때 랜덤 아이템 생성
                 UpdateShopUI(); // 상점 UI 업데이트
             }
         }
+    }
+
+    public void ResetShopState()
+    {
+        isInitialized = false;
+        shopUI.SetActive(false); // 상점 UI 비활성화
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -84,13 +92,22 @@ public class Shop : MonoBehaviour
         if (shopUI != null)
         {
             shopUI.SetActive(isOpen);
-            Time.timeScale = isOpen ? 0 : 1; // 상점이 열려 있으면 게임 일시정지
-            Debug.Log("상점 " + (isOpen ? "열림" : "닫힘"));
+
+            if (isOpen)
+            {
+                if (!isInitialized)
+                {
+                    GenerateRandomItems(); // 최초 열릴 때 아이템 생성
+                    isInitialized = true;
+                }
+                UpdateShopUI(); // 상점 UI 갱신
+            }
+            Time.timeScale = isOpen ? 0 : 1; // 상점이 열리면 게임 일시정지
         }
     }
 
     // 랜덤 아이템 생성
-    private void GenerateRandomItems()
+    public void GenerateRandomItems()
     {
         var items = new Item[]
         {
@@ -102,6 +119,13 @@ public class Shop : MonoBehaviour
         {
             shopItems[i] = items[Random.Range(0, items.Length)];
         }
+    }
+
+    public void ResetShopItems()
+    {
+        isInitialized = false; // 초기화 상태 리셋
+        GenerateRandomItems(); // 새로운 아이템 생성
+        Debug.Log("Shop items reset.");
     }
 
     // 상점 UI 업데이트

@@ -137,6 +137,11 @@ public class PlayerState : MonoBehaviour
         isRetry = true; // 리트라이 플래그 설정
         PlayerPrefs.SetInt("IsRetry", 1); // 리트라이 상태 저장
         SaveMoney();    // 현재 money 저장
+
+        if (Shop.instance != null)
+        {
+            Shop.instance.ResetShopItems();
+        }
         Debug.Log("Retry game triggered.");
     }
 
