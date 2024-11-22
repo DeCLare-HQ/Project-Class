@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour
     public float disableColliderTime = 0.5f;
 
     // 2단 점프
-    public int maxJumpCount = 2;
+    public int maxJumpCount = 1;
     private int JumpCount = 0;
 
     // 스프라이트 방향
@@ -299,13 +299,17 @@ public class PlayerController : MonoBehaviour
             {
                 Debug.Log("MeleeAttack Hit: " + collider.name);
 
-                // 적에게 데미지 전달
-                EnemyMelee01 enemy = collider.GetComponent<EnemyMelee01>();
-                if (enemy != null)
+                // 원거리 적 처리
+                if (collider.TryGetComponent(out EnemyRange01 rangedEnemy))
                 {
-                    // 플레이어의 물리 공격력에서 적의 물리 방어력을 뺀 데미지 계산
-                    float damage = Mathf.Max(0, playerState.physicalAttackPower - enemy.GetComponent<StateEnemyMelee01>().physicalDefense);
-                    enemy.TakeDamage(damage); // 적에게 데미지 전달
+                    float damage = Mathf.Max(0, playerState.physicalAttackPower - rangedEnemy.GetComponent<StateEnemyRange01>().physicalDefense);
+                    rangedEnemy.TakeDamage(damage);
+                }
+                // 근접 적 처리
+                else if (collider.TryGetComponent(out EnemyMelee01 meleeEnemy))
+                {
+                    float damage = Mathf.Max(0, playerState.physicalAttackPower - meleeEnemy.GetComponent<StateEnemyMelee01>().physicalDefense);
+                    meleeEnemy.TakeDamage(damage);
                 }
             }
         }
@@ -353,31 +357,46 @@ public class PlayerController : MonoBehaviour
     // 적과 충돌 감지
     void CheckForEnemyCollision()
     {
-        if (!isInvincible)
+        if (!isInvincible) // 무적 상태가 아닐 경우에만 감지
         {
-            // 사각형 충돌 감지 범위 안에 적이 있는지 확인
             Collider2D[] colliders = Physics2D.OverlapBoxAll(detectionBoxTransform.position, detectionBoxSize, 0, enemyLayerMask);
             foreach (Collider2D collider in colliders)
             {
-                if (collider.tag == enemyTag)  // 적이 적 태그를 가지고 있는지 확인
+                // 원거리 적과의 충돌 처리
+                if (collider.TryGetComponent(out EnemyRange01 rangedEnemy))
                 {
-                    HandleEnemyCollision(collider.GetComponent<EnemyMelee01>());
+                    HandleRangedEnemyCollision(rangedEnemy);
+                    break;
+                }
+                // 근접 적과의 충돌 처리
+                else if (collider.TryGetComponent(out EnemyMelee01 meleeEnemy))
+                {
+                    HandleMeleeEnemyCollision(meleeEnemy);
                     break;
                 }
             }
         }
     }
 
-    // 적과의 충돌 처리 함수
-    void HandleEnemyCollision(EnemyMelee01 enemy)
+    // 원거리 적과의 충돌 처리
+    void HandleRangedEnemyCollision(EnemyRange01 rangedEnemy)
     {
-        if (enemy != null)
+        if (rangedEnemy != null)
         {
-            // 적 공격력 - 플레이어 방어력 데미지 공식
-            float damage = Mathf.Max(0, enemy.GetComponent<StateEnemyMelee01>().attackPower - playerState.defense);
+            // EnemyRange01의 공격력 사용
+            float damage = Mathf.Max(0, rangedEnemy.GetComponent<StateEnemyRange01>().attackPower - playerState.defense);
+            TakeDamage(damage); // 플레이어가 데미지 받음
+        }
+    }
 
-            // 데미지 적용
-            TakeDamage(damage);
+    // 기존 근접 적과의 충돌 처리
+    void HandleMeleeEnemyCollision(EnemyMelee01 meleeEnemy)
+    {
+        if (meleeEnemy != null)
+        {
+            // EnemyMelee01의 공격력 사용
+            float damage = Mathf.Max(0, meleeEnemy.GetComponent<StateEnemyMelee01>().attackPower - playerState.defense);
+            TakeDamage(damage); // 플레이어가 데미지 받음
         }
     }
 

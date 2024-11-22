@@ -232,7 +232,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   disableColliderTime: 0.5
-  maxJumpCount: 2
+  maxJumpCount: 1
   horizontalInput: 0
   pos: {fileID: 5867413052977570523}
   boxSize: {x: 3, y: 2}

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyBullet : MonoBehaviour
 {
-    private float attackPower; // 적의 공격력 저장
+    private float attackPower; // 공격력 저장
 
     void Start()
     {
@@ -13,10 +13,17 @@ public class EnemyBullet : MonoBehaviour
 
     // 투사체의 방향 설정 메서드
     public void SetDirection(Vector2 direction)
+{
+    Rigidbody2D rb = GetComponent<Rigidbody2D>();
+    if (rb != null)
     {
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
         rb.velocity = direction * 5.0f; // 투사체 속도 설정
     }
+    else
+    {
+        Debug.LogError("Rigidbody2D가 설정되지 않았습니다.");
+    }
+}
 
     // 공격력 설정
     public void SetAttackPower(float power)
