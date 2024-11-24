@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 6536921346882968379}
   - component: {fileID: 3668158283308580702}
   - component: {fileID: 4911766338028055432}
+  - component: {fileID: 5167851100187280694}
   m_Layer: 6
   m_Name: "\uC8FC\uC778\uACF5"
   m_TagString: Player
@@ -317,6 +318,29 @@ MonoBehaviour:
   jumpEffectSpawnPoint: {fileID: 5931131520546929238}
   jumpEffectDuration: 0.5
   jumpEffectDelay: 0
+--- !u!114 &5167851100187280694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 973135922993925652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172e09a21e24c0240a1a379ac7166b32, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerJumpSound: {fileID: 8300000, guid: d4a7cfa4ebc3a834d9abe06d068c024a, type: 3}
+  playerMeleeAttackSound1: {fileID: 8300000, guid: 74d45153fd597354aa458d4a5e2ecf0d, type: 3}
+  playerMeleeAttackSound2: {fileID: 8300000, guid: 94946495e9f2b2d48a823b58fa06ea06, type: 3}
+  playerMeleeAttackSound3: {fileID: 8300000, guid: dbbfee46e3f80e74b8014386a88d7caa, type: 3}
+  playerRangeAttackSound: {fileID: 8300000, guid: 5b407e06ef73b294ea231489f31ca6b2, type: 3}
+  playerHitSound1: {fileID: 8300000, guid: 302d61f839835474aaae582349733d24, type: 3}
+  playerHitSound2: {fileID: 8300000, guid: e946e67596c2ef3458e066616a52ea1c, type: 3}
+  playerHitSound3: {fileID: 8300000, guid: 542e7162bf690e544879c48fa2ecfdb2, type: 3}
+  playerDeathSound: {fileID: 8300000, guid: feccc6ba8b31b7547be64260c86b7724, type: 3}
+  playerHealingSound: {fileID: 8300000, guid: 876dffd286421ae4c84609d475db0bcf, type: 3}
+  playerUsePotionSound: {fileID: 8300000, guid: f05c75747f8a3bf4198ec7b9e6671fc6, type: 3}
 --- !u!1 &1556223063031634581
 GameObject:
   m_ObjectHideFlags: 0

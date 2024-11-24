@@ -157,6 +157,7 @@ public class PlayerController : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Space) && JumpCount > 0)
         {
             Jump();
+            PlayerSounds.instance?.PlayJumpSound();
         }
 
         // 바닥에 닿았는지 확인, 점프 횟수 초기화
@@ -171,6 +172,7 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.A))
             {
                 MeleeAttack();
+                PlayerSounds.instance?.PlayMeleeAttackSound(UnityEngine.Random.Range(1, 4)); // 랜덤 사운드 재생
             }
         }
         else
@@ -181,6 +183,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.S))
         {
             Fire();
+            PlayerSounds.instance?.PlayRangeAttackSound();
         }
 
         // 적과의 충돌 감지
@@ -190,6 +193,8 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
         {
             UsePotion();
+            PlayerSounds.instance?.PlayUsePotionSound();
+            PlayerSounds.instance?.PlayHealingSound();
         }
     }
 
@@ -413,6 +418,7 @@ public class PlayerController : MonoBehaviour
         // 체력이 0 이하이면 게임 오버 처리
         if (playerState.currentHealth <= 0)
         {
+            PlayerSounds.instance?.PlayDeathSound();
             if (gameOverManager == null)
             {
                 FindGameOverManager(); // gameOverManager가 없으면 다시 찾기
@@ -432,6 +438,7 @@ public class PlayerController : MonoBehaviour
         {
             // 피격 시 무적 상태 및 깜빡이는 효과 적용
             StartCoroutine(BlinkAndBecomeInvincible());
+            PlayerSounds.instance?.PlayHitSound(UnityEngine.Random.Range(1, 4)); // 랜덤 히트 사운드 재생
         }
     }
 
