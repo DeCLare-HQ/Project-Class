@@ -16,11 +16,12 @@ public class ItemSpawn : MonoBehaviour
 
         if (playerTransform != null)
         {
-            if (Input.GetKeyDown(KeyCode.Keypad0)) SpawnItem(itemManager.money1);
+            if (Input.GetKeyDown(KeyCode.Keypad0)) SpawnItem(itemManager.money10);
             if (Input.GetKeyDown(KeyCode.Keypad1)) SpawnItem(itemManager.testMelee);
             if (Input.GetKeyDown(KeyCode.Keypad2)) SpawnItem(itemManager.testMagic);
             if (Input.GetKeyDown(KeyCode.Keypad3)) SpawnItem(itemManager.testHealth);
             if (Input.GetKeyDown(KeyCode.Keypad4)) SpawnItem(itemManager.testDefense);
+            if (Input.GetKeyDown(KeyCode.Keypad9)) SpawnItem(itemManager.specialItem);
         }
     }
 

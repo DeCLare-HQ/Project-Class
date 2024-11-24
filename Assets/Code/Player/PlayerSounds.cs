@@ -9,6 +9,8 @@ public class PlayerSounds : MonoBehaviour
 
     [Header("이동")]
     public AudioClip playerJumpSound;
+    public AudioClip[] walkingSounds;
+    private int walkingSoundIndex = 0;
 
     [Header("공격")]
     public AudioClip playerMeleeAttackSound1;
@@ -107,6 +109,16 @@ public class PlayerSounds : MonoBehaviour
     public void PlayUsePotionSound()
     {
         PlaySound(playerUsePotionSound);
+    }
+
+    public void PlayWalkingSound()
+    {
+        if (walkingSounds.Length == 0) return;
+
+        audioSource.PlayOneShot(walkingSounds[walkingSoundIndex]);
+
+        // 다음 소리로 인덱스 이동 (순환)
+        walkingSoundIndex = (walkingSoundIndex + 1) % walkingSounds.Length;
     }
 
     // 공통 사운드 재생 메서드

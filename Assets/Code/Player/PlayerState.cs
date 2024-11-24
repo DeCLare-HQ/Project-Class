@@ -162,7 +162,7 @@ public class PlayerState : MonoBehaviour
         switch (item.itemType)
         {
             case ItemType.Money:
-                money += (int)item.effectAmount;
+                money = Mathf.Max(money + (int)item.effectAmount, 0); // 소지금이 0 아래로 내려가지 않도록 처리
                 Debug.Log($"{item.itemName} applied: Money increased by {item.effectAmount}");
                 break;
             case ItemType.HealthMax:
@@ -208,5 +208,13 @@ public class PlayerState : MonoBehaviour
                 Debug.Log($"{item.itemName} removed: Defense decreased by {item.effectAmount}");
                 break;
         }
+    }
+
+    public void ResetMoney()
+    {
+        money = 0; // 소지금 초기화
+        PlayerPrefs.SetInt("PlayerMoney", money); // 저장된 소지금도 초기화
+        PlayerPrefs.Save();
+        Debug.Log($"소지금이 초기화되었습니다: {money}");
     }
 }

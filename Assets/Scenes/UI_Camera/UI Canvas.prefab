@@ -293,6 +293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d689dd5c8b119294ab30a58aa4ca8afc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  specialItemSprite: {fileID: 21300000, guid: 2e8302797d49d94498e07f867c4a76d1, type: 3}
   Money1Sprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   Money5Sprite: {fileID: 10911, guid: 0000000000000000f000000000000000, type: 0}
   Money10Sprite: {fileID: 21300000, guid: 718074e4e56a5404e824bf8e6571ea7d, type: 3}
@@ -300,6 +301,13 @@ MonoBehaviour:
   testMagicSprite: {fileID: -478842568, guid: e0a8865a276fd5d4e83df3be8c9c39f5, type: 3}
   testHealthSprite: {fileID: 21300000, guid: 0541ee580687de343bcdaa0f07d9c508, type: 3}
   testDefenseSprite: {fileID: 21300000, guid: 387c5bc0fcdc16f40a0bd6a403fe79a4, type: 3}
+  specialItem:
+    itemName: 
+    itemType: 0
+    effectAmount: 0
+    itemSprite: {fileID: 0}
+    itemPrice: 0
+    itemDescription: 
   money1:
     itemName: 
     itemType: 0

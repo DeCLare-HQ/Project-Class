@@ -63,6 +63,10 @@ public class PlayerController : MonoBehaviour
     public Transform detectionBoxTransform; // 충돌 감지를 위한 Empty Object의 Transform
     public Vector2 detectionBoxSize = new Vector2(1.0f, 2.0f); // 사각형 범위 크기
 
+    // 걷기
+    private float walkingSoundCooldown = 0.8f; // 걷는 소리 재생 간격
+    private float lastWalkingSoundTime = 0f;
+
     void Start()
     {
         // PlayerState 컴포넌트
@@ -205,6 +209,11 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 movement = new Vector2(horizontalInput * playerState.moveSpeed, rigidbody2D.velocity.y);
             rigidbody2D.velocity = movement;
+            if (Time.time - lastWalkingSoundTime >= walkingSoundCooldown)
+            {
+                PlayerSounds.instance?.PlayWalkingSound();
+                lastWalkingSoundTime = Time.time;
+            }
         }
         else
         {

@@ -3,9 +3,9 @@ using UnityEngine;
 public class ItemManager : MonoBehaviour
 {
     // Unity 에디터에서 아이템 스프라이트 할당
+    public Sprite specialItemSprite;
     public Sprite Money1Sprite;
     public Sprite Money5Sprite;
-
     public Sprite Money10Sprite;
 
     public Sprite testMeleeSprite;
@@ -14,6 +14,7 @@ public class ItemManager : MonoBehaviour
     public Sprite testDefenseSprite;
 
     // 생성된 아이템을 외부에서 참조할 수 있도록 변수로 저장
+    public Item specialItem; // 새로운 아이템 정의
     public Item money1;
     public Item money5;
     public Item money10;
@@ -24,6 +25,17 @@ public class ItemManager : MonoBehaviour
 
     private void Start()
     {
+        // 소지금 -
+        specialItem = new Item
+        (
+            "SpecialItem",
+            ItemType.Money,
+            -999, // 효과는 음수로 정의
+            specialItemSprite,
+            0, // 상점에 나오지 않도록 가격 0
+            "사용 시 소지금을 999 감소시킵니다."
+        );
+
         // Money-1
         money1 = new Item
         (
