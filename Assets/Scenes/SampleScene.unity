@@ -6671,50 +6671,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5167851100187280694, guid: 97c21139d15e94945ad05b0c4b4346ca, type: 3}
-      propertyPath: playerHitSound1
-      value: 
-      objectReference: {fileID: 8300000, guid: 302d61f839835474aaae582349733d24, type: 3}
-    - target: {fileID: 5167851100187280694, guid: 97c21139d15e94945ad05b0c4b4346ca, type: 3}
-      propertyPath: playerHitSound2
-      value: 
-      objectReference: {fileID: 8300000, guid: e946e67596c2ef3458e066616a52ea1c, type: 3}
-    - target: {fileID: 5167851100187280694, guid: 97c21139d15e94945ad05b0c4b4346ca, type: 3}
-      propertyPath: playerHitSound3
-      value: 
-      objectReference: {fileID: 8300000, guid: 542e7162bf690e544879c48fa2ecfdb2, type: 3}
-    - target: {fileID: 5167851100187280694, guid: 97c21139d15e94945ad05b0c4b4346ca, type: 3}
-      propertyPath: playerJumpSound
-      value: 
-      objectReference: {fileID: 8300000, guid: d4a7cfa4ebc3a834d9abe06d068c024a, type: 3}
-    - target: {fileID: 5167851100187280694, guid: 97c21139d15e94945ad05b0c4b4346ca, type: 3}
-      propertyPath: playerDeathSound
-      value: 
-      objectReference: {fileID: 8300000, guid: feccc6ba8b31b7547be64260c86b7724, type: 3}
-    - target: {fileID: 5167851100187280694, guid: 97c21139d15e94945ad05b0c4b4346ca, type: 3}
-      propertyPath: playerHealingSound
-      value: 
-      objectReference: {fileID: 8300000, guid: 876dffd286421ae4c84609d475db0bcf, type: 3}
-    - target: {fileID: 5167851100187280694, guid: 97c21139d15e94945ad05b0c4b4346ca, type: 3}
-      propertyPath: playerUsePotionSound
-      value: 
-      objectReference: {fileID: 8300000, guid: f05c75747f8a3bf4198ec7b9e6671fc6, type: 3}
-    - target: {fileID: 5167851100187280694, guid: 97c21139d15e94945ad05b0c4b4346ca, type: 3}
-      propertyPath: playerRangeAttackSound
-      value: 
-      objectReference: {fileID: 8300000, guid: 5b407e06ef73b294ea231489f31ca6b2, type: 3}
-    - target: {fileID: 5167851100187280694, guid: 97c21139d15e94945ad05b0c4b4346ca, type: 3}
-      propertyPath: playerMeleeAttackSound1
-      value: 
-      objectReference: {fileID: 8300000, guid: 74d45153fd597354aa458d4a5e2ecf0d, type: 3}
-    - target: {fileID: 5167851100187280694, guid: 97c21139d15e94945ad05b0c4b4346ca, type: 3}
-      propertyPath: playerMeleeAttackSound2
-      value: 
-      objectReference: {fileID: 8300000, guid: 94946495e9f2b2d48a823b58fa06ea06, type: 3}
-    - target: {fileID: 5167851100187280694, guid: 97c21139d15e94945ad05b0c4b4346ca, type: 3}
-      propertyPath: playerMeleeAttackSound3
-      value: 
-      objectReference: {fileID: 8300000, guid: dbbfee46e3f80e74b8014386a88d7caa, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
