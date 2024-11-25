@@ -19,7 +19,7 @@ public class TitleButton : MonoBehaviour
         {
             PlayerState.instance.StartNewGame(); // 상태 초기화
         }
-        SceneManager.LoadScene("Lobby"); // 씬 로드
+        SceneManager.LoadScene("Tutorial"); // 씬 로드
     }
 
     public void SPButton()
