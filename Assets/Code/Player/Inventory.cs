@@ -140,7 +140,7 @@ public class Inventory : MonoBehaviour
     {
         if (moneyText != null)
         {
-            moneyText.text = "Money: " + PlayerState.instance.money.ToString();
+            moneyText.text = PlayerState.instance.money.ToString();
         }
     }
 
