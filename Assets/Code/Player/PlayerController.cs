@@ -200,6 +200,17 @@ public class PlayerController : MonoBehaviour
             PlayerSounds.instance?.PlayUsePotionSound();
             PlayerSounds.instance?.PlayHealingSound();
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            #if UNITY_EDITOR
+                // 에디터에서 종료를 에뮬레이션
+                UnityEditor.EditorApplication.isPlaying = false;
+            #else
+                // 빌드된 게임 종료
+                Application.Quit();
+            #endif
+        }
     }
 
     void FixedUpdate()

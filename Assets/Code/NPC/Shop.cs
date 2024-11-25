@@ -44,7 +44,7 @@ public class Shop : MonoBehaviour
     void Update()
     {
         // 상점 닫기
-        if (shopUI.activeSelf && Input.GetKeyDown(KeyCode.Escape))
+        if (shopUI.activeSelf && Input.GetKeyDown(KeyCode.DownArrow))
         {
             ToggleShopUI(false);
         }
